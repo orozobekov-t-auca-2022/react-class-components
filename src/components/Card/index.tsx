@@ -8,6 +8,8 @@ interface IProps {
 
 interface IState {
   image: string,
+  description: string,
+  id: number,
 }
 
 class Card extends Component<IProps, IState>{
@@ -15,6 +17,8 @@ class Card extends Component<IProps, IState>{
     super(props);
     this.state = {
       image: '',
+      description: '',
+      id: -1,
     }
   }
 
@@ -22,18 +26,35 @@ class Card extends Component<IProps, IState>{
     const endpoint = this.props.url;
     try {
       const response = await fetch(`${endpoint}`);
+      if(!response.ok) {
+        throw new Error('Something wrong with response');
+      }
       const data = await response.json();
-      this.setState({image: data.sprites.front_default});
+      this.setState({image: data.sprites.front_default, id: data.id});
+    } catch (error) {
+      console.error(error)
+    }
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_POKE_SPECIE_API_KEY}/${this.state.id}`);
+      if(!response.ok) {
+        throw new Error('Something wrong with response');
+      }
+      const data = await response.json();
+      this.setState({description: data.flavor_text_entries.filter((text: {language: {name: string}}) => text.language.name === 'en')[0].flavor_text});
     } catch (error) {
       console.log(error)
     }
   }
   
   render(): ReactNode {
-    return <div className={styles.card}>
-      <p>{this.props.name}</p>
+    return (
+    <div className={styles.card}>
+      <h2>{this.props.name}</h2>
       <img src={this.state.image} />
+      <p>{this.state.description}</p>
     </div>
+    )
   }
 }
 

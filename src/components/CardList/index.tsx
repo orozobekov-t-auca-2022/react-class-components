@@ -6,7 +6,7 @@ interface IPokemonsProps{
   results: {
     name: string,
     url: string
-  }[]
+  }[],
 }
 
 class CardList extends Component<IPokemonsProps> {

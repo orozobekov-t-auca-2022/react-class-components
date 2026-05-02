@@ -1,7 +1,8 @@
 import { Component, type ReactNode, type SubmitEvent } from 'react';
-import './App.css'
+import styles from './App.module.css'
 import CardList from './components/CardList';
 import Search from './components/Search';
+import Header from './components/Header';
 
 interface IProps{
   name: string
@@ -18,7 +19,8 @@ interface IPokeResponse{
 interface IState{
   pokemons: IPokeResponse,
   isLoading: boolean,
-  error: string | null
+  error: string | null,
+  searchPrompt: string
 }
 
 class App extends Component<IProps, IState> {
@@ -30,11 +32,16 @@ class App extends Component<IProps, IState> {
         results: []
       },
       isLoading: false,
-      error: null
+      error: null,
+      searchPrompt: '',
     }
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
+    if(localStorage.getItem('searchQuery')) {
+      this.setState({searchPrompt: localStorage.getItem('searchQuery') ?? ''})
+    }
     try {
       const response = await fetch(`${import.meta.env.VITE_POKE_API_KEY}`);
       if(!response.ok) {
@@ -42,7 +49,6 @@ class App extends Component<IProps, IState> {
       }
       const data = await response.json();
       this.setState({pokemons: data, isLoading: false})
-      console.log(this.state);
     } catch (error) {
       if (error instanceof Error) {
         this.setState({error: error.message, isLoading: false});
@@ -54,6 +60,7 @@ class App extends Component<IProps, IState> {
 
   handleSubmit(e: SubmitEvent) {
     e.preventDefault();
+    this.setState({searchPrompt: this.state.searchPrompt.trimStart().trimEnd()})
   }
 
   render(): ReactNode {
@@ -64,11 +71,16 @@ class App extends Component<IProps, IState> {
     if (isLoading) {
       return <p>Loading</p>
     }
+    const data = pokemons.results.filter((pokemon) => pokemon.name.toLowerCase().includes(this.state.searchPrompt.toLowerCase()))
     return (
-    <>
-      <Search onSubmit={this.handleSubmit} />
-      <CardList results={pokemons.results} />
-    </>
+    <main className={styles.container}>
+      <Header />
+      <Search value={this.state.searchPrompt} onChange={(e) => {
+        this.setState({searchPrompt: e.target.value})
+        localStorage.setItem('searchQuery', this.state.searchPrompt);
+        }} onSubmit={this.handleSubmit} />
+      <CardList results={data} />
+    </main>
     ) 
   }
 }

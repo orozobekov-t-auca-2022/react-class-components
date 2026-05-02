@@ -1,8 +1,11 @@
 import { Component, type ReactNode } from "react";
-import { type SubmitEvent } from "react";
+import { type SubmitEvent, type ChangeEvent } from "react";
+import styles from './Search.module.css';
 
 interface ISearchProps {
+  value: string,
   onSubmit: (e: SubmitEvent<Element>) => void,
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void,
 }
 
 class Search extends Component<ISearchProps> {
@@ -13,10 +16,12 @@ class Search extends Component<ISearchProps> {
   render(): ReactNode {
     return (
       <section className='search'>
-        <form onSubmit={this.props.onSubmit}>
-          <label htmlFor="search_input"></label>
-          <input id="search_input"/>
-          <button type="submit">Search</button>
+        <form className={styles.searchForm} onSubmit={this.props.onSubmit}>
+          <div className={styles.input_field}>
+            <label className={styles.label} htmlFor="search_input">Search pokemon</label>
+            <input className={styles.input} value={this.props.value} onChange={this.props.onChange} id="search_input"/>
+          </div>
+          <button className={styles.button} type="submit">Search</button>
         </form>
       </section>
     )
