@@ -1,11 +1,11 @@
-.input{
+.input {
   width: 200px;
   height: 40px;
   font-size: 20px;
   border-radius: 10px;
 }
 
-.button{
+.button {
   height: 40px;
   font-size: 20px;
   border-radius: 10px;
@@ -14,14 +14,14 @@
   background-color: rgb(71, 71, 184);
 }
 
-.searchForm{
+.searchForm {
   display: flex;
   justify-content: center;
   align-items: end;
   gap: 20px;
 }
 
-.input_field{
+.input_field {
   display: flex;
   flex-direction: column;
 }

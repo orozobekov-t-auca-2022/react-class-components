@@ -3,10 +3,11 @@ import styles from './Loader.module.css';
 
 class Loader extends Component {
   render(): ReactNode {
-    return setTimeout(() => (
-      <div className={styles.loader}>
+    return (
+      <div className={styles.loaderContainer}>
+        <div className={styles.loader}></div>
       </div>
-    ), 3000)
+    );
   }
 }
 
