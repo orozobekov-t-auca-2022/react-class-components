@@ -27,7 +27,7 @@ class Card extends Component<ICardProps, ICardState> {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_POKE_SPECIE_API_KEY}/${this.state.id}`
+        `${import.meta.env.VITE_POKE_SPECIE_API_KEY}/${this.props.name}`
       );
       if (!response.ok) {
         throw new Error('Something wrong with response');
