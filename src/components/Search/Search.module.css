@@ -11,6 +11,7 @@
   border-radius: 10px;
   text-decoration: none;
   cursor: pointer;
+  background-color: rgb(71, 71, 184);
 }
 
 .searchForm{

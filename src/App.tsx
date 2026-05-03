@@ -1,8 +1,12 @@
-import { Component, type ReactNode, type SubmitEvent } from 'react';
+import { Component, type ChangeEvent, type ReactNode, type SubmitEvent } from 'react';
 import styles from './App.module.css'
 import CardList from './components/CardList';
 import Search from './components/Search';
 import Header from './components/Header';
+import ErrorButton from './components/ErrorButton';
+import ErrorList from './components/ErrorList';
+import ErrorBoundary from './components/ErrorBoundary';
+import Loader from './components/Loader';
 
 interface IProps{
   name: string
@@ -20,8 +24,10 @@ interface IState{
   pokemons: IPokeResponse,
   isLoading: boolean,
   error: string | null,
-  searchPrompt: string
+  searchPrompt: string,
 }
+
+const ERROR_MESSAGE = 'It seems that something went wrong. We ask you to visit our site later';
 
 class App extends Component<IProps, IState> {
   constructor(props: IProps) {
@@ -31,11 +37,12 @@ class App extends Component<IProps, IState> {
         count: 0,
         results: []
       },
-      isLoading: false,
+      isLoading: true,
       error: null,
       searchPrompt: '',
     }
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -63,24 +70,29 @@ class App extends Component<IProps, IState> {
     this.setState({searchPrompt: this.state.searchPrompt.trimStart().trimEnd()})
   }
 
+  handleChange(e: ChangeEvent<HTMLInputElement, Element>) {
+    e.preventDefault();
+    this.setState({searchPrompt: e.target.value})
+    localStorage.setItem('searchQuery', this.state.searchPrompt);
+  }
+
   render(): ReactNode {
     const { pokemons, isLoading, error } = this.state;
-    if (error) {
-      return <p>Error has occured</p>
-    }
     if (isLoading) {
-      return <p>Loading</p>
+      return <Loader />
     }
     const data = pokemons.results.filter((pokemon) => pokemon.name.toLowerCase().includes(this.state.searchPrompt.toLowerCase()))
     return (
-    <main className={styles.container}>
-      <Header />
-      <Search value={this.state.searchPrompt} onChange={(e) => {
-        this.setState({searchPrompt: e.target.value})
-        localStorage.setItem('searchQuery', this.state.searchPrompt);
-        }} onSubmit={this.handleSubmit} />
-      <CardList results={data} />
-    </main>
+    <ErrorBoundary>
+      <main className={styles.container}>
+        <Header />
+        <Search value={this.state.searchPrompt} onChange={this.handleChange} onSubmit={this.handleSubmit} />
+        {
+          error ? <ErrorList message={ERROR_MESSAGE} /> : <CardList results={data} />
+        }
+        <ErrorButton />
+      </main>
+    </ErrorBoundary>
     ) 
   }
 }

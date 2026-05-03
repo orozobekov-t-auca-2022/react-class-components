@@ -10,10 +10,6 @@ interface IPokemonsProps{
 }
 
 class CardList extends Component<IPokemonsProps> {
-  constructor(props: IPokemonsProps) {
-    super(props)
-  }
-
   render(): ReactNode {
     return <section className='results'>
       <ul className={styles.list}>
