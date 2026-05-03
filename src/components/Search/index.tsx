@@ -1,12 +1,6 @@
 import { Component, type ReactNode } from 'react';
-import { type SubmitEvent, type ChangeEvent } from 'react';
 import styles from './Search.module.css';
-
-interface ISearchProps {
-  value: string;
-  onSubmit: (e: SubmitEvent<Element>) => void;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-}
+import type { ISearchProps } from './type';
 
 class Search extends Component<ISearchProps> {
   constructor(props: ISearchProps) {

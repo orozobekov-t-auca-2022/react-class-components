@@ -12,25 +12,7 @@ import ErrorButton from './components/ErrorButton';
 import ErrorList from './components/ErrorList';
 import ErrorBoundary from './components/ErrorBoundary';
 import Loader from './components/Loader';
-
-interface IProps {
-  name: string;
-}
-
-interface IPokeResponse {
-  count: number;
-  results: {
-    name: string;
-    url: string;
-  }[];
-}
-
-interface IState {
-  pokemons: IPokeResponse;
-  isLoading: boolean;
-  error: string | null;
-  searchPrompt: string;
-}
+import type { IProps, IState } from './type';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';

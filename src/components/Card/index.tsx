@@ -1,19 +1,9 @@
 import { Component, type ReactNode } from 'react';
 import styles from './Card.module.css';
+import type { ICardProps, ICardState } from './type';
 
-interface IProps {
-  name: string;
-  url: string;
-}
-
-interface IState {
-  image: string;
-  description: string;
-  id: number;
-}
-
-class Card extends Component<IProps, IState> {
-  constructor(props: IProps) {
+class Card extends Component<ICardProps, ICardState> {
+  constructor(props: ICardProps) {
     super(props);
     this.state = {
       image: '',
