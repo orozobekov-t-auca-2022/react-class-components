@@ -1,7 +1,3 @@
-export interface IProps {
-  name: string;
-}
-
 export interface IPokeResponse {
   count: number;
   results: {

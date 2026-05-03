@@ -12,13 +12,13 @@ import ErrorButton from './components/ErrorButton';
 import ErrorList from './components/ErrorList';
 import ErrorBoundary from './components/ErrorBoundary';
 import Loader from './components/Loader';
-import type { IProps, IState } from './type';
+import type { IState } from './type';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
 
-class App extends Component<IProps, IState> {
-  constructor(props: IProps) {
+class App extends Component<{}, IState> {
+  constructor(props: {}) {
     super(props);
     this.state = {
       pokemons: {
