@@ -18,6 +18,8 @@ const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
 
 class App extends Component<{}, IState> {
+  private allPokemons: { name: string; url: string }[] = [];
+
   constructor(props: {}) {
     super(props);
     this.state = {
@@ -31,6 +33,7 @@ class App extends Component<{}, IState> {
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.filterPokemons = this.filterPokemons.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -39,11 +42,7 @@ class App extends Component<{}, IState> {
       this.setState({ searchPrompt: savedSearch });
     }
 
-    if (localStorage.getItem('searchQuery')) {
-      this.setState({
-        searchPrompt: localStorage.getItem('searchQuery') ?? '',
-      });
-    }
+    this.setState({ isLoading: true });
 
     try {
       const response = await fetch(
@@ -55,7 +54,21 @@ class App extends Component<{}, IState> {
       const data = await response.json();
 
       setTimeout(() => {
-        this.setState({ pokemons: data, isLoading: false });
+        this.allPokemons = data.results;
+
+        const filteredResults = savedSearch
+          ? data.results.filter((pokemon: { name: string }) =>
+              pokemon.name.toLowerCase().includes(savedSearch.toLowerCase())
+            )
+          : data.results;
+
+        this.setState({
+          pokemons: {
+            results: filteredResults,
+            count: data.count,
+          },
+          isLoading: false,
+        });
       }, 3000);
     } catch (error) {
       if (error instanceof Error) {
@@ -74,20 +87,28 @@ class App extends Component<{}, IState> {
     e.preventDefault();
     const trimmedSearch = this.state.searchPrompt.trim();
     this.setState({ searchPrompt: trimmedSearch });
-    localStorage.setItem('searchQuery', this.state.searchPrompt);
+    localStorage.setItem('searchQuery', trimmedSearch);
+    this.filterPokemons(trimmedSearch);
   }
 
-  handleChange(e: ChangeEvent<HTMLInputElement, Element>) {
-    e.preventDefault();
+  filterPokemons(searchTerm: string) {
+    const filtered = this.allPokemons.filter((pokemon) =>
+      pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    this.setState({
+      pokemons: {
+        results: filtered,
+        count: filtered.length,
+      },
+    });
+  }
+
+  handleChange(e: ChangeEvent<HTMLInputElement>) {
     this.setState({ searchPrompt: e.target.value });
   }
 
   render(): ReactNode {
     const { pokemons, isLoading, error } = this.state;
-
-    const data = pokemons.results.filter((pokemon) =>
-      pokemon.name.toLowerCase().includes(this.state.searchPrompt.toLowerCase())
-    );
 
     return (
       <ErrorBoundary>
@@ -103,7 +124,7 @@ class App extends Component<{}, IState> {
           ) : error ? (
             <ErrorList message={ERROR_MESSAGE} />
           ) : (
-            <CardList results={data} />
+            <CardList results={pokemons.results} />
           )}
           <ErrorButton />
         </main>
