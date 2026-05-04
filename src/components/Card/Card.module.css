@@ -1,0 +1,13 @@
+.card {
+  width: 300px;
+  height: 350px;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  width: 320px;
+  height: 370px;
+}
