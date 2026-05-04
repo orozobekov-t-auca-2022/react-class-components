@@ -17,10 +17,10 @@ import type { IState } from './type';
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
 
-class App extends Component<{}, IState> {
+class App extends Component<Record<string, never>, IState> {
   private allPokemons: { name: string; url: string }[] = [];
 
-  constructor(props: {}) {
+  constructor(props: Record<string, never>) {
     super(props);
     this.state = {
       pokemons: {
