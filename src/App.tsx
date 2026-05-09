@@ -120,7 +120,7 @@ class App extends Component<Record<string, never>, IState> {
             onSubmit={this.handleSubmit}
           />
           {isLoading ? (
-            <Loader />
+            <Loader data-testid="loader" />
           ) : error ? (
             <ErrorList message={ERROR_MESSAGE} />
           ) : (
