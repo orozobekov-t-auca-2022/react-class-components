@@ -3,8 +3,10 @@ import userEvent from '@testing-library/user-event';
 import type { ReactElement } from 'react';
 
 function render(ui: ReactElement, options?: RenderOptions) {
+  const user = userEvent.setup();
+
   return {
-    userEvent,
+    user,
     ...rtlRender(ui, options),
   };
 }
