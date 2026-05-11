@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "../../test-utils/render";
 import { describe, vi } from "vitest";
 import ErrorBoundary from ".";
 
@@ -14,43 +14,44 @@ describe('ErrorBoundary Component', () => {
   it('renders children when there is no error', () => {
     render(
       <ErrorBoundary>
-        <div>Child Component</div>
+        <ThrowError />
       </ErrorBoundary>
     );
 
     expect(screen.getByText('Child Component')).toBeInTheDocument();
   });
 
-  it('catches and handles errors', () => {
+  it('displays fallback ui when the child throws', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
     render(
       <ErrorBoundary>
-        <ThrowError shouldThrow={true} />
-      </ErrorBoundary>
-    );
-
-    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
-  });
-
-  it('displays fallback ui when it catches error', () => {
-    render(
-      <ErrorBoundary>
-        <ThrowError shouldThrow={true} />
+        <ThrowError shouldThrow />
       </ErrorBoundary>
     );
 
     expect(screen.queryByText('Child Component')).not.toBeInTheDocument();
-    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+    expect(screen.getByText(/oops, something went wrong/i)).toBeInTheDocument();
+
+    consoleErrorSpy.mockRestore();
+    consoleLogSpy.mockRestore();
   });
 
-  it('logs error to console', () => {
-    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+  it('logs the caught error to console', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
     render(
       <ErrorBoundary>
-        <ThrowError shouldThrow={true} />
+        <ThrowError shouldThrow />
       </ErrorBoundary>
     );
 
-    expect(consoleError).toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    expect(consoleLogSpy).toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
+    consoleLogSpy.mockRestore();
   })
 });

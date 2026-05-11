@@ -1,9 +1,13 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { render, screen } from "../../test-utils/render";
+import { describe, expect, it, vi } from "vitest";
 import CardList from ".";
 
+vi.mock('../Card', () => ({
+  default: ({name}: {name:string}) => <h2>{name}</h2>
+}));
+
 describe('CardList Component', () => {
-  it('renders correct number of cards when data is provided', () => {
+  it('renders each card when data is provided', () => {
     const items = [
       {name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/'},
       {name: 'charizard', url: 'https://pokeapi.co/api/v2/pokemon/6/'},
@@ -12,6 +16,7 @@ describe('CardList Component', () => {
 
     render(<CardList results={items} />);
 
+    expect(screen.getAllByRole('heading', {level: 2})).toHaveLength(3);
     expect(screen.getByText('bulbasaur')).toBeInTheDocument();
     expect(screen.getByText('charizard')).toBeInTheDocument();
     expect(screen.getByText('blastoise')).toBeInTheDocument();
@@ -20,6 +25,6 @@ describe('CardList Component', () => {
   it('displays appropriate message when the results array is empty', () => {
     render(<CardList results={[]} />);
 
-    expect(screen.getByText('No matching Pokemon found')).toBeInTheDocument();
+    expect(screen.getByText(/no matching Pokemon found/i)).toBeInTheDocument();
   });
 })
