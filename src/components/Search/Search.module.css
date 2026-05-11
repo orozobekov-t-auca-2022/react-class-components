@@ -1,0 +1,27 @@
+.input {
+  width: 200px;
+  height: 40px;
+  font-size: 20px;
+  border-radius: 10px;
+}
+
+.button {
+  height: 40px;
+  font-size: 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  background-color: rgb(71, 71, 184);
+}
+
+.searchForm {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  gap: 20px;
+}
+
+.input_field {
+  display: flex;
+  flex-direction: column;
+}
