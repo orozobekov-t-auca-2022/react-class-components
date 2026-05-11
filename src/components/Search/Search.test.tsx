@@ -1,75 +1,63 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "../../test-utils/render";
 import { describe, vi } from "vitest";
 import Search from ".";
-import userEvent from "@testing-library/user-event";
+import { Component } from "react";
+
+interface IHarnessState {
+  value: string;
+};
+
+class SearchHarness extends Component<Record<string, never>, IHarnessState> {
+  state: IHarnessState = {
+    value: '',
+  };
+
+  render() {
+    return (
+      <Search
+        value={this.state.value}
+        onSubmit={(event) => event.preventDefault()}
+        onChange={(event) => this.setState({ value: event.target.value })}
+      />
+    );
+  }
+}
 
 describe('Search Component', () => {
-  beforeEach(() => {
-    localStorage.clear();
-  });
-
   it('renders search input and button', () => {
     render(<Search onSubmit={vi.fn()} onChange={vi.fn()} value="bulbasaur" />);
 
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
-    expect(screen.getByRole('button', {name: /search/i})).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveValue('bulbasaur');
+    expect(screen.getByRole('button', { name: /search/i })).toBeInTheDocument();
   });
 
-  it('displays saved search term from localStorage on mount', () => {
-    localStorage.setItem('searchQuery', 'bulbasaur');
-
-    render(<Search onSubmit={vi.fn()} onChange={vi.fn()} value="bulbasaur" />);
-
-    const input = screen.getByRole('textbox') as HTMLInputElement;
-    expect(input.value).toBe('bulbasaur');
-  });
-
-  it('shows empty input when no save term exists', () => {
-    render(<Search onSubmit={vi.fn()} onChange={vi.fn()} value="" />);
-
-    const input = screen.getByRole('textbox') as HTMLInputElement;
-    expect(input.value).toBe('');
-  });
-
-  it('updates input value when user types', async () =>{
+  it('calls change handler when user types', async () => {
     const handleChange = vi.fn();
-    render(<Search onSubmit={vi.fn()} onChange={handleChange} value="" />);
+    const { user } = render(
+      <Search onSubmit={vi.fn()} onChange={handleChange} value="" />
+    );
 
-    const input = screen.getByRole('textbox') as HTMLInputElement;
-    await userEvent.type(input, 'pikachu');
+    await user.type(screen.getByRole('textbox'), 'pikachu');
 
-    expect(handleChange).toHaveBeenCalled();
     expect(handleChange).toHaveBeenCalledTimes(7);
   });
 
-  it('removes whitespace from search input', async () => {
-    const handleSubmit = vi.fn();
-    const handleChange = vi.fn();
+  it('submits the form when search button is clicked', async () => {
+    const handleSubmit = vi.fn((event) => event.preventDefault());
+    const { user } = render(
+      <Search onSubmit={handleSubmit} onChange={vi.fn()} value="pikachu" />
+    );
 
-    render(<Search onSubmit={handleSubmit} onChange={handleChange} value="   pikachu  " />);
+    await user.click(screen.getByRole('button', { name: /search/i }));
 
-    const button = screen.getByRole('button');
-    await userEvent.click(button);
-
-    expect(handleSubmit).toHaveBeenCalled();
     expect(handleSubmit).toHaveBeenCalledTimes(1);
   });
 
-  it('overwrites existing search term in localStorage when new search term is passed', async () => {
-    localStorage.setItem('searchQuery', 'bulbasaur');
+  it('stays synchronized with a controlled class parent', async () => {
+    const { user } = render(<SearchHarness />);
 
-    const handleSubmit = vi.fn((e) => {
-      e.preventDefault();
-      const trimmedValue = 'pikachu'.trim();
-      localStorage.setItem('searchQuery', trimmedValue);
-    });
-    const handleChange = vi.fn();
+    await user.type(screen.getByRole('textbox'), 'pikachu');
 
-    render(<Search onSubmit={handleSubmit} onChange={handleChange} value="pikachu" />);
-
-    const button = screen.getByRole('button');
-    await userEvent.click(button);
-
-    expect(localStorage.getItem('searchQuery')).toBe('pikachu');
-  })
-})
+    expect(screen.getByRole('textbox')).toHaveValue('pikachu');
+  });
+});
