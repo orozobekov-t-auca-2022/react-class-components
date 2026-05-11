@@ -1,11 +1,11 @@
-import { render, screen } from "../../test-utils/render";
-import { describe, vi } from "vitest";
-import Search from ".";
-import { Component } from "react";
+import { render, screen } from '../../test-utils/render';
+import { describe, vi } from 'vitest';
+import Search from '.';
+import { Component } from 'react';
 
 interface IHarnessState {
   value: string;
-};
+}
 
 class SearchHarness extends Component<Record<string, never>, IHarnessState> {
   state: IHarnessState = {

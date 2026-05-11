@@ -24,4 +24,7 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    ignores: ['coverage/**'],
+  },
 ]);

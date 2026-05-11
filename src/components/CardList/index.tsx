@@ -13,14 +13,15 @@ class CardList extends Component<IPokemonsProps> {
   render(): ReactNode {
     return (
       <section className="results">
-        {this.props.results.length > 0 ? 
+        {this.props.results.length > 0 ? (
           <ul className={styles.list}>
             {this.props.results.map((pokemon) => (
               <Card key={pokemon.name} name={pokemon.name} url={pokemon.url} />
             ))}
-          </ul> : 
+          </ul>
+        ) : (
           <p>No matching Pokemon found</p>
-        }
+        )}
       </section>
     );
   }

@@ -4,7 +4,7 @@ import App from './App';
 import { act } from 'react';
 
 vi.mock('./components/CardList', () => ({
-  default: ({ results } : { results : {name: string, url: string}[] }) => (
+  default: ({ results }: { results: { name: string; url: string }[] }) => (
     <section data-testid="card-list-mock">
       <ul>
         {results.map((pokemon) => (
@@ -12,19 +12,20 @@ vi.mock('./components/CardList', () => ({
         ))}
       </ul>
     </section>
-  )
+  ),
 }));
 
 const pokemons = [
-  { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/'},
-  { name: 'charizard', url: 'https://pokeapi.co/api/v2/pokemon/6/'},
-  { name: 'squirtle', url: 'https://pokeapi.co/api/v2/pokemon/7/'},
-]
+  { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' },
+  { name: 'charizard', url: 'https://pokeapi.co/api/v2/pokemon/6/' },
+  { name: 'squirtle', url: 'https://pokeapi.co/api/v2/pokemon/7/' },
+];
 
-const createResponse = (body: unknown, ok: boolean = true) : Response => ({
-  ok,
-  json: async () => body
-}) as Response;
+const createResponse = (body: unknown, ok: boolean = true): Response =>
+  ({
+    ok,
+    json: async () => body,
+  }) as Response;
 
 const loadPokemonList = async () => {
   await act(async () => {
@@ -43,15 +44,15 @@ describe('App', () => {
   afterEach(() => {
     vi.restoreAllMocks();
     vi.useRealTimers();
-  })
+  });
 
   it('shows loader on initial render and renders the fetched results', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       createResponse({
         count: pokemons.length,
-        results: pokemons
+        results: pokemons,
       })
-    )
+    );
 
     render(<App />);
 
@@ -65,7 +66,6 @@ describe('App', () => {
     expect(screen.getByText('charizard')).toBeInTheDocument();
     expect(screen.getByText('squirtle')).toBeInTheDocument();
   });
-
 
   it('restores the saved search term from localStorage and filters the initial list', async () => {
     localStorage.setItem('searchQuery', 'charizard');
@@ -122,9 +122,9 @@ describe('App', () => {
     await loadPokemonList();
 
     const input = screen.getByRole('textbox');
-    const searchButton = screen.getByRole('button', {name: /search/i});
+    const searchButton = screen.getByRole('button', { name: /search/i });
 
-    fireEvent.change(input, {target: {value: ' bul   '}});
+    fireEvent.change(input, { target: { value: ' bul   ' } });
     fireEvent.click(searchButton);
 
     expect(input).toHaveValue('bul');
@@ -149,9 +149,9 @@ describe('App', () => {
     await loadPokemonList();
 
     const input = screen.getByRole('textbox');
-    const searchButton = screen.getByRole('button', {name: /search/i});
+    const searchButton = screen.getByRole('button', { name: /search/i });
 
-    fireEvent.change(input, {target: {value: '   char  '}});
+    fireEvent.change(input, { target: { value: '   char  ' } });
     fireEvent.click(searchButton);
 
     expect(localStorage.getItem('searchQuery')).toBe('char');
@@ -162,7 +162,7 @@ describe('App', () => {
 
   it('shows an error when the initial request fails', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({ message: 'Internal Server Error'}, false)
+      createResponse({ message: 'Internal Server Error' }, false)
     );
 
     await act(async () => {
@@ -171,11 +171,15 @@ describe('App', () => {
       await Promise.resolve();
     });
 
-    expect(screen.getByText(/it seems that something went wrong/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/it seems that something went wrong/i)
+    ).toBeInTheDocument();
   });
 
   it('renders the error boundary fallback when the error button throws', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleErrorSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
@@ -192,10 +196,10 @@ describe('App', () => {
       await vi.advanceTimersByTime(3000);
     });
 
-    fireEvent.click(screen.getByRole('button', {name: /error/i}));
+    fireEvent.click(screen.getByRole('button', { name: /error/i }));
     expect(screen.getByText(/oops, something went wrong/i)).toBeInTheDocument();
 
     consoleErrorSpy.mockRestore();
     consoleLogSpy.mockRestore();
-  })
+  });
 });
