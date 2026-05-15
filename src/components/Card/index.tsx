@@ -40,7 +40,7 @@ const Card = ({name, url}: ICardProps) => {
       }
     };
     loadData();
-  }, []);
+  }, [name, url]);
 
   return(
     <>
