@@ -1,30 +1,30 @@
-import { Component, type ReactNode } from 'react';
+import { useState } from 'react';
 import styles from './ErrorButton.module.css';
 
 interface IErrorButtonState {
   break: boolean;
 }
 
-class ErrorButton extends Component<unknown, IErrorButtonState> {
-  state = {
-    break: false,
-  };
+const ErrorButton = () => {
+  const [errorState, setErrorState] = useState<IErrorButtonState>({
+    break: false
+  })
 
-  render(): ReactNode {
-    if (this.state.break) {
-      throw new Error('Test error triggered!');
-    }
-    return (
+  if(errorState) {
+    throw new Error('Test error triggered!');
+  }
+  return (
+    <>
       <section className={styles.errorButtonContainer}>
         <button
           className={styles.errorButton}
-          onClick={() => this.setState({ break: true })}
+          onClick={() => setErrorState({ break: true })}
         >
           Error
         </button>
       </section>
-    );
-  }
+    </>
+  )
 }
 
 export default ErrorButton;
