@@ -15,6 +15,7 @@ import Loader from './components/Loader';
 import type { IState } from './type';
 import {getPageCount, getPagesArray} from './utils/pages';
 import Pagination from './components/Pagination';
+import { useSearchParams } from 'react-router';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
@@ -29,11 +30,12 @@ const App = () => {
     isLoading: true,
     error: null,
     searchPrompt: '',
-    page: 1,
-    limit: 20,
   });
-  const {isLoading, error, pokemons, page, limit} = data;
+  const {isLoading, error, pokemons} = data;
   const [pagesArray, setPagesArray] = useState<number[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = searchParams.get('page');
+  const limit = searchParams.get('limit');
   
   useEffect(() => {
     const loadData = async () => {
@@ -43,14 +45,16 @@ const App = () => {
       }
 
       try{
-	      const offset = (page - 1) * limit;
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`);
+        const currentPage = page ? parseInt(page) : 1;
+        const currentLimit = limit ? parseInt(limit) : 20;
+	      const offset = (currentPage - 1) * currentLimit;
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=20`);
         if(!response.ok) {
           throw new Error('Network error');
         }
 
         const data = await response.json();
-        const pageCount = getPageCount(data.count, limit);
+        const pageCount = getPageCount(data.count, limit ? parseInt(limit) : 20);
         const pages = getPagesArray(pageCount)    
 	      setPagesArray(pages);
 
@@ -91,10 +95,11 @@ const App = () => {
     }
 
     loadData();
-  }, [page, limit, pagesArray]);
+  }, [page, limit]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setData((prevData) => ({...prevData, searchPrompt: e.target.value }));
+    setSearchParams({page: '1', limit: '20'})
   };
 
   const handleSubmit = (e: SubmitEvent) => {
@@ -136,7 +141,9 @@ const App = () => {
           <CardList results={pokemons.results} />
         )}
         <ErrorButton />
-	      <Pagination pagesArray={pagesArray} currentPage={page} onChange={(actualPage: number) => setData((prevData) => ({...prevData, page: actualPage}))} />
+	      <Pagination pagesArray={pagesArray} currentPage={page} onChange={(actualPage: number) => {
+          setSearchParams({ page: `${actualPage}`, limit: '20' })
+          }} />
       </main>
     </ErrorBoundary>
   )
