@@ -11,4 +11,6 @@ export interface IState {
   isLoading: boolean;
   error: string | null;
   searchPrompt: string;
+  page: number;
+  limit: number;
 }

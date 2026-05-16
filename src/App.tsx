@@ -13,6 +13,8 @@ import ErrorList from './components/ErrorList';
 import ErrorBoundary from './components/ErrorBoundary';
 import Loader from './components/Loader';
 import type { IState } from './type';
+import {getPageCount, getPagesArray} from './utils/pages';
+import Pagination from './components/Pagination';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
@@ -27,9 +29,12 @@ const App = () => {
     isLoading: true,
     error: null,
     searchPrompt: '',
+    page: 1,
+    limit: 20,
   });
-  const {isLoading, error, pokemons} = data;
-
+  const {isLoading, error, pokemons, page, limit} = data;
+  const [pagesArray, setPagesArray] = useState<number[]>([]);
+  
   useEffect(() => {
     const loadData = async () => {
       const savedSearch = localStorage.getItem('searchQuery');
@@ -38,12 +43,16 @@ const App = () => {
       }
 
       try{
-        const response = await fetch(`${import.meta.env.VITE_POKE_API_KEY}`);
+	      const offset = (page - 1) * limit;
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`);
         if(!response.ok) {
           throw new Error('Network error');
         }
 
         const data = await response.json();
+        const pageCount = getPageCount(data.count, limit);
+        const pages = getPagesArray(pageCount)    
+	      setPagesArray(pages);
 
         setTimeout(() => {
           setAllPokemons(data.results);
@@ -52,6 +61,7 @@ const App = () => {
                 pokemon.name.toLowerCase().includes(savedSearch.toLowerCase())
               )
             : data.results;
+	  
 
           setData((prevData) => ({
             ...prevData, 
@@ -62,7 +72,6 @@ const App = () => {
             isLoading: false,
           }));
         }, 3000);
-
       }catch(e) {
         if (e instanceof Error) {
           setData((prevData) => ({
@@ -82,7 +91,7 @@ const App = () => {
     }
 
     loadData();
-  }, []);
+  }, [page, limit, pagesArray]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setData((prevData) => ({...prevData, searchPrompt: e.target.value }));
@@ -105,7 +114,7 @@ const App = () => {
       pokemons: {
         ...prevData.pokemons,
         results: filtered,
-        count: filtered.length,
+        // count: filtered.length,
       }
     }));
   }
@@ -127,6 +136,7 @@ const App = () => {
           <CardList results={pokemons.results} />
         )}
         <ErrorButton />
+	      <Pagination pagesArray={pagesArray} currentPage={page} onChange={(actualPage: number) => setData((prevData) => ({...prevData, page: actualPage}))} />
       </main>
     </ErrorBoundary>
   )
