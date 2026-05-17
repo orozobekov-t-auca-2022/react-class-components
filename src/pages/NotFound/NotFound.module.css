@@ -1,0 +1,38 @@
+.notFound{
+  max-width: 500px;
+  width: 100%;
+  
+  display: flex;
+  flex-direction: column;
+
+  margin: 40px auto;
+}
+
+.message{
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  tex-align: center;
+  border: 1px solid red;
+  border-radius: 12px;
+}
+
+.message h2{
+  font-size: 30px;
+  color: yellow;
+  font-weight: 500;
+}
+
+.message p{
+  font-size: 22px;
+  color: white;
+}
+
+.backHome{
+  width: 100%;
+  background-color: #93c5fd;
+}
