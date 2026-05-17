@@ -1,10 +1,11 @@
-import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 import styles from './Pagination.module.css';
 import type { IPagination } from './types';
 import { Fragment } from 'react/jsx-runtime';
 
 const Pagination = ({pagesArray, onChange}: IPagination) => {
-  const {page} = useParams();
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get('page');
   const getVisiblePages = (
     totalPages: number[],
     currentPage: number

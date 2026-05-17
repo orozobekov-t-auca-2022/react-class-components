@@ -15,7 +15,7 @@ import Loader from './components/Loader';
 import type { IState } from './type';
 import {getPageCount, getPagesArray} from './utils/pages';
 import Pagination from './components/Pagination';
-import { Outlet, useMatch, useNavigate, useParams } from 'react-router';
+import { Outlet, useSearchParams } from 'react-router';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
@@ -35,9 +35,9 @@ const App = () => {
   });
   const {isLoading, error, pokemons} = data;
   const [pagesArray, setPagesArray] = useState<number[]>([]);
-  const navigate = useNavigate();
-  const { page } = useParams();
-  const detailsRouteMatch = useMatch('/:page/:detailsId');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const detailsId = searchParams.get('detailsId');
+  const page = Number(searchParams.get('page')) || 1;
 
   
   useEffect(() => {
@@ -48,7 +48,7 @@ const App = () => {
       }
 
       try{
-        const currentPage = page ? parseInt(page) : 1;
+        const currentPage = page ? page : 1;
 	      const offset = (currentPage - 1) * PAGE_LIMIT;
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${PAGE_LIMIT}`);
         if(!response.ok) {
@@ -101,7 +101,7 @@ const App = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setData((prevData) => ({...prevData, searchPrompt: e.target.value }));
-    navigate(`/1`);
+    setSearchParams({page: '1'})
   };
 
   const handleSubmit = (e: SubmitEvent) => {
@@ -128,7 +128,7 @@ const App = () => {
 
   return(
     <ErrorBoundary>
-      <div className={detailsRouteMatch ? styles.splitLayout : styles.singleLayout}>
+      <div className={detailsId ? styles.splitLayout : styles.singleLayout}>
         <main className={styles.container}>
           <Header />
           <Search
@@ -144,13 +144,15 @@ const App = () => {
             <CardList results={pokemons.results} />
           )}
           <ErrorButton />
-	        <Pagination pagesArray={pagesArray} currentPage={page ? parseInt(page): 1} onChange={(actualPage: number) => {
-            navigate(`/${actualPage}`)
+	        <Pagination pagesArray={pagesArray} currentPage={page ? page: 1} onChange={(actualPage: number) => {
+            setSearchParams({page: `${actualPage}`})
             }} />
         </main>
-        <aside className={styles.sidebar} aria-label="details panel">
-          <Outlet />
-        </aside>
+        {page &&
+          <aside className={styles.sidebar} aria-label="details panel">
+            <Outlet />
+          </aside>
+        }
       </div>
     </ErrorBoundary>
   )

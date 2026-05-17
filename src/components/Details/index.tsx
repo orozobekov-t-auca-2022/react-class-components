@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import styles from './Details.module.css';
 import type { IAbility, IDetailsState, IForm } from './types';
-import { useNavigate, useParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 
 const Details = () => {
-  const {page, detailsId} = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = searchParams.get('page');
+  const detailsId = searchParams.get('details');
   const actualDetailsId = Number(detailsId);
-  const navigate = useNavigate();
   const [detailsInfo, setDetailsInfo] = useState<IDetailsState>({
     name: '',
     description: '',
@@ -46,7 +47,7 @@ const Details = () => {
   }, [actualDetailsId]);
 
   const handleClose = () => {
-    navigate(`/${page ?? 1}`);
+    setSearchParams({page: `${page ?? 1}`})
   };
 
   return(

@@ -1,21 +1,17 @@
 import { createBrowserRouter } from 'react-router';
 import App from './App';
 import About from './pages/About';
-import Error from './pages/Error';
+import NotFound from './pages/NotFound';
 import Details from './components/Details';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    Component: App
-  },
-  {
-    path: '/:page',
     Component: App,
     children: [
       {
-        path: ':detailsId',
-        Component: Details
+        path: '',
+        Component: Details,
       }
     ]
   },
@@ -24,8 +20,8 @@ const router = createBrowserRouter([
     Component: About,
   },
   {
-    path: '/*',
-    Component: Error,
+    path: '*',
+    Component: NotFound,
   },
 ]);
 

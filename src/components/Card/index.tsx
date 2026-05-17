@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styles from './Card.module.css';
 import type { ICardProps, ICardState } from './type';
-import { Link, useParams } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 
 const Card = ({name, url}: ICardProps) => {
   const [pokemonInfo, setPokemonInfo] = useState<ICardState>({
@@ -9,9 +9,9 @@ const Card = ({name, url}: ICardProps) => {
     description: '',
     id: -1,
   });
-  const { page } = useParams();
-  const currentPage = page ? page : '1';
-  console.log(page)
+  const [searchParams] = useSearchParams()
+  const page = searchParams.get('page');
+  const currentPage = page ? Number(page) : 1;
 
   useEffect(() => {
     const loadData = async () => {
@@ -48,7 +48,7 @@ const Card = ({name, url}: ICardProps) => {
 
   return(
     <>
-      <Link to={`/${currentPage}/${pokemonInfo.id}`} className={styles.card}>
+      <Link to={`/?page=${currentPage}&details=${pokemonInfo.id}`} className={styles.card}>
         <h2>{name}</h2>
         <img src={pokemonInfo.image} alt={name} />
         <p>{pokemonInfo.description}</p>
