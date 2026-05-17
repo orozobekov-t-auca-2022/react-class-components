@@ -1,11 +1,10 @@
-import { useSearchParams } from 'react-router';
+import { useParams } from 'react-router';
 import styles from './Pagination.module.css';
 import type { IPagination } from './types';
+import { Fragment } from 'react/jsx-runtime';
 
 const Pagination = ({pagesArray, onChange}: IPagination) => {
-  const [searchParams] = useSearchParams();
-  const currentPage = searchParams.get('page');
-  console.log(currentPage)
+  const {page} = useParams();
   const getVisiblePages = (
     totalPages: number[],
     currentPage: number
@@ -22,25 +21,27 @@ const Pagination = ({pagesArray, onChange}: IPagination) => {
     });
   };
 
-  const current = Number(currentPage ? currentPage : 1);
+  const current = Number(page ? page : 1);
+
+  const currentPage = !current || current < 1 ? 1 : current;
 
   const visiblePages = getVisiblePages(
     pagesArray,
-    current
+    currentPage
   );
 
   return(
     <nav aria-label='pagination' className={styles.paginationWrapper}>
       <ul className={styles.pagination}>
         <li>
-          <button onClick={() => current > 0 ? onChange(current - 1) : onChange(pagesArray.length)}>
+          <button onClick={() => currentPage - 1 > 1 ? onChange(currentPage - 1) : onChange(pagesArray.length)}>
             &laquo;
           </button>
         </li>
         {
 	      (visiblePages.length > 0) && visiblePages.map((page, index) => {
             const prevPage = visiblePages[index - 1];
-            return <li
+            return <Fragment
               key={page}
             >
                 {prevPage && page - prevPage > 1 && (
@@ -49,15 +50,16 @@ const Pagination = ({pagesArray, onChange}: IPagination) => {
                 </li>
                 )}
               <button
-                className={page === current ? styles.page__current : undefined}
+                className={page === currentPage ? styles.page__current : undefined}
+                onChange={() => onChange(page)}
               >
                 {page}
               </button>
-            </li>
+            </Fragment>
             })
 	        }
         <li>
-          <button onClick={() => current < pagesArray.length ? onChange(current + 1) : onChange(1)}>
+          <button onClick={() => currentPage < pagesArray.length ? onChange(current + 1) : onChange(1)}>
             &raquo;
           </button>
         </li>
