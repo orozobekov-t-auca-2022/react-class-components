@@ -15,10 +15,12 @@ import Loader from './components/Loader';
 import type { IState } from './type';
 import {getPageCount, getPagesArray} from './utils/pages';
 import Pagination from './components/Pagination';
-import { useSearchParams } from 'react-router';
+import { Outlet, useMatch, useNavigate, useParams } from 'react-router';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
+
+const PAGE_LIMIT = 20;
 
 const App = () => {
   const [allPokemons, setAllPokemons] = useState<{ name: string; url: string }[]>([]);
@@ -33,9 +35,10 @@ const App = () => {
   });
   const {isLoading, error, pokemons} = data;
   const [pagesArray, setPagesArray] = useState<number[]>([]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const page = searchParams.get('page');
-  const limit = searchParams.get('limit');
+  const navigate = useNavigate();
+  const { page } = useParams();
+  const detailsRouteMatch = useMatch('/:page/:detailsId');
+
   
   useEffect(() => {
     const loadData = async () => {
@@ -46,15 +49,14 @@ const App = () => {
 
       try{
         const currentPage = page ? parseInt(page) : 1;
-        const currentLimit = limit ? parseInt(limit) : 20;
-	      const offset = (currentPage - 1) * currentLimit;
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=20`);
+	      const offset = (currentPage - 1) * PAGE_LIMIT;
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${PAGE_LIMIT}`);
         if(!response.ok) {
           throw new Error('Network error');
         }
 
         const data = await response.json();
-        const pageCount = getPageCount(data.count, limit ? parseInt(limit) : 20);
+        const pageCount = getPageCount(data.count, PAGE_LIMIT);
         const pages = getPagesArray(pageCount)    
 	      setPagesArray(pages);
 
@@ -95,11 +97,11 @@ const App = () => {
     }
 
     loadData();
-  }, [page, limit]);
+  }, [page]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setData((prevData) => ({...prevData, searchPrompt: e.target.value }));
-    setSearchParams({page: '1', limit: '20'})
+    navigate(`/1`);
   };
 
   const handleSubmit = (e: SubmitEvent) => {
@@ -126,25 +128,30 @@ const App = () => {
 
   return(
     <ErrorBoundary>
-      <main className={styles.container}>
-        <Header />
-        <Search
-          value={data.searchPrompt}
-          onChange={handleChange}
-          onSubmit={handleSubmit}
-        />
-        {isLoading ? (
-          <Loader data-testid="loader" />
-        ) : error ? (
-          <ErrorList message={ERROR_MESSAGE} />
-        ) : (
-          <CardList results={pokemons.results} />
-        )}
-        <ErrorButton />
-	      <Pagination pagesArray={pagesArray} currentPage={page} onChange={(actualPage: number) => {
-          setSearchParams({ page: `${actualPage}`, limit: '20' })
-          }} />
-      </main>
+      <div className={detailsRouteMatch ? styles.splitLayout : styles.singleLayout}>
+        <main className={styles.container}>
+          <Header />
+          <Search
+            value={data.searchPrompt}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+          />
+          {isLoading ? (
+            <Loader data-testid="loader" />
+          ) : error ? (
+            <ErrorList message={ERROR_MESSAGE} />
+          ) : (
+            <CardList results={pokemons.results} />
+          )}
+          <ErrorButton />
+	        <Pagination pagesArray={pagesArray} currentPage={page ? parseInt(page): 1} onChange={(actualPage: number) => {
+            navigate(`/${actualPage}`)
+            }} />
+        </main>
+        <aside className={styles.sidebar} aria-label="details panel">
+          <Outlet />
+        </aside>
+      </div>
     </ErrorBoundary>
   )
 }

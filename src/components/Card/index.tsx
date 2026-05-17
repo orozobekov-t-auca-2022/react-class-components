@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import styles from './Card.module.css';
 import type { ICardProps, ICardState } from './type';
+import { Link, useParams } from 'react-router';
 
 const Card = ({name, url}: ICardProps) => {
   const [pokemonInfo, setPokemonInfo] = useState<ICardState>({
@@ -8,6 +9,9 @@ const Card = ({name, url}: ICardProps) => {
     description: '',
     id: -1,
   });
+  const { page } = useParams();
+  const currentPage = page ? page : '1';
+  console.log(page)
 
   useEffect(() => {
     const loadData = async () => {
@@ -44,11 +48,11 @@ const Card = ({name, url}: ICardProps) => {
 
   return(
     <>
-      <div className={styles.card}>
+      <Link to={`/${currentPage}/${pokemonInfo.id}`} className={styles.card}>
         <h2>{name}</h2>
         <img src={pokemonInfo.image} alt={name} />
         <p>{pokemonInfo.description}</p>
-      </div>
+      </Link>
     </>
   )
 }

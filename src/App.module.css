@@ -1,4 +1,21 @@
 .container {
-  max-width: 1126px;
   margin: 0 auto;
+  width: 70%;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+}
+
+.singleLayout{
+  display: flex
+}
+
+.sidebar {
+  width: 30%;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+}
+
+.splitLayout {
+  display: flex;
+  height: 100vh;
 }

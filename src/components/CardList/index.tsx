@@ -12,7 +12,7 @@ const CardList = (props: IPokemonsProps) => {
   const {results} = props;
   return(
     <>
-    <section className="results">
+      <section className="results">
         {results.length > 0 ? (
           <ul className={styles.list}>
             {results.map((pokemon) => (

@@ -1,7 +1,11 @@
+import { useSearchParams } from 'react-router';
 import styles from './Pagination.module.css';
 import type { IPagination } from './types';
 
-const Pagination = ({currentPage, pagesArray, onChange}: IPagination) => {
+const Pagination = ({pagesArray, onChange}: IPagination) => {
+  const [searchParams] = useSearchParams();
+  const currentPage = searchParams.get('page');
+  console.log(currentPage)
   const getVisiblePages = (
     totalPages: number[],
     currentPage: number
@@ -18,7 +22,7 @@ const Pagination = ({currentPage, pagesArray, onChange}: IPagination) => {
     });
   };
 
-  const current = Number(currentPage);
+  const current = Number(currentPage ? currentPage : 1);
 
   const visiblePages = getVisiblePages(
     pagesArray,
@@ -51,7 +55,7 @@ const Pagination = ({currentPage, pagesArray, onChange}: IPagination) => {
               </button>
             </li>
             })
-	    }
+	        }
         <li>
           <button onClick={() => current < pagesArray.length ? onChange(current + 1) : onChange(1)}>
             &raquo;
