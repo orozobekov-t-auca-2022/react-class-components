@@ -3,13 +3,17 @@ import styles from './About.module.css';
 const About = () => {
   return (
     <section className={styles.about}>
-      <h1>Information about the author</h1>
-      <div className={styles.name}>
-        Author: Tilek
+      <div className={styles.title}>
+        <h1>Information about the author</h1>
       </div>
-      <div>
+      <div className={styles.name}>
+        <h2>  
+          Author: Tilek
+	</h2>
+      </div>
+      <div className={styles.contactInfo}>
         <h2>Contact Info</h2>
-        <ul className={styles.contactInfo}>
+        <ul>
           <li>Discord: discord</li>
           <li>Telegram: telegram</li>
           <li>Linkedin: linkedin</li>
