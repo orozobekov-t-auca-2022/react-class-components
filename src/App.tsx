@@ -42,6 +42,7 @@ const App = () => {
   const page = Number(searchParams.get('page')) || 1;
 
   useEffect(() => {
+    
     const loadData = async () => {
       try{
         const currentPage = page ? page : 1;
