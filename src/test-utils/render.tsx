@@ -4,13 +4,14 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactElement } from 'react';
+import { MemoryRouter } from 'react-router';
 
 function render(ui: ReactElement, options?: RenderOptions) {
   const user = userEvent.setup();
 
   return {
     user,
-    ...rtlRender(ui, options),
+    ...rtlRender(<MemoryRouter>{ui}</MemoryRouter>, options),
   };
 }
 

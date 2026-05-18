@@ -16,6 +16,7 @@ import type { IState } from './type';
 import {getPageCount, getPagesArray} from './utils/pages';
 import Pagination from './components/Pagination';
 import { Outlet, useSearchParams } from 'react-router';
+import useLocalStorage from './hooks/useLocalStorage';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
@@ -31,21 +32,17 @@ const App = () => {
     },
     isLoading: true,
     error: null,
-    searchPrompt: '',
   });
   const {isLoading, error, pokemons} = data;
   const [pagesArray, setPagesArray] = useState<number[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [savedPrompt, , savePrompt] = useLocalStorage('searchQuery', '');
+  const [searchPrompt, setSearchPrompt] = useState(savedPrompt);
   const detailsId = searchParams.get('details');
   const page = Number(searchParams.get('page')) || 1;
-  
+
   useEffect(() => {
     const loadData = async () => {
-      const savedSearch = localStorage.getItem('searchQuery');
-      if(savedSearch) {
-        setData((prevData) => ({...prevData, searchPrompt: savedSearch}));
-      }
-
       try{
         const currentPage = page ? page : 1;
 	      const offset = (currentPage - 1) * PAGE_LIMIT;
@@ -56,14 +53,14 @@ const App = () => {
 
         const data = await response.json();
         const pageCount = getPageCount(data.count, PAGE_LIMIT);
-        const pages = getPagesArray(pageCount)    
+        const pages = getPagesArray(pageCount);
 	      setPagesArray(pages);
 
         setTimeout(() => {
           setAllPokemons(data.results);
-          const filteredResults = savedSearch
+          const filteredResults = savedPrompt
             ? data.results.filter((pokemon: { name: string }) =>
-                pokemon.name.toLowerCase().includes(savedSearch.toLowerCase())
+                pokemon.name.toLowerCase().includes(savedPrompt.toLowerCase())
               )
             : data.results;
 	  
@@ -82,13 +79,13 @@ const App = () => {
           setData((prevData) => ({
             ...prevData,
             isLoading: false,
-            // error: 
+            error: ERROR_MESSAGE,
           }));
         } else {
           console.log(`An unexpected error has occured ${e}`);
           setData((prevData) => ({
             ...prevData,
-            // error: 'An unexpected error occured',
+            error: ERROR_MESSAGE,
             isLoading: false,
           }));
         }
@@ -96,18 +93,18 @@ const App = () => {
     }
 
     loadData();
-  }, [page]);
+  }, [page, savedPrompt]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setData((prevData) => ({...prevData, searchPrompt: e.target.value }));
+    setSearchPrompt(e.target.value);
     setSearchParams({page: '1'})
   };
 
   const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
-    const trimmedSearch = data.searchPrompt.trim();
-    setData((prevData) => ({...prevData, searchPrompt: trimmedSearch }));
-    localStorage.setItem('searchQuery', trimmedSearch);
+    const trimmedSearch = searchPrompt.trim();
+    setSearchPrompt(trimmedSearch);
+    savePrompt(trimmedSearch);
     filterPokemons(trimmedSearch);
   }
 
@@ -130,7 +127,7 @@ const App = () => {
         <main className={styles.container}>
           <Header />
           <Search
-            value={data.searchPrompt}
+            value={searchPrompt}
             onChange={handleChange}
             onSubmit={handleSubmit}
           />

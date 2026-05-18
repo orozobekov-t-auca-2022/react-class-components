@@ -10,7 +10,7 @@ const ErrorButton = () => {
     break: false
   })
 
-  if(!errorState) {
+  if(errorState.break) {
     throw new Error('Test error triggered!');
   }
   return (
