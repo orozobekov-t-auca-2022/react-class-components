@@ -3,13 +3,13 @@ interface IErrorListProps {
 }
 
 const ErrorList = (props: IErrorListProps) => {
-  const {message} = props;
+  const { message } = props;
 
-  return(
+  return (
     <div>
       <h3>{message}</h3>
     </div>
-  )
-}
+  );
+};
 
 export default ErrorList;

@@ -7,7 +7,7 @@ const Loader = () => {
         <div className={styles.loader} data-testid="loader"></div>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default Loader;

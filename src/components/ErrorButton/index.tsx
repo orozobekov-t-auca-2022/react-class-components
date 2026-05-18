@@ -7,10 +7,10 @@ interface IErrorButtonState {
 
 const ErrorButton = () => {
   const [errorState, setErrorState] = useState<IErrorButtonState>({
-    break: false
-  })
+    break: false,
+  });
 
-  if(errorState.break) {
+  if (errorState.break) {
     throw new Error('Test error triggered!');
   }
   return (
@@ -24,7 +24,7 @@ const ErrorButton = () => {
         </button>
       </section>
     </>
-  )
-}
+  );
+};
 
 export default ErrorButton;

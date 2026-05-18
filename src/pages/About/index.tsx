@@ -7,9 +7,7 @@ const About = () => {
         <h1>Information about the author</h1>
       </div>
       <div className={styles.name}>
-        <h2>  
-          Author: Tilek
-	</h2>
+        <h2>Author: Tilek</h2>
       </div>
       <div className={styles.contactInfo}>
         <h2>Contact Info</h2>

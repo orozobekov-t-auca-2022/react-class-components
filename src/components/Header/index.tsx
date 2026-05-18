@@ -6,10 +6,12 @@ const Header = () => {
     <header className={styles.header}>
       <h1>Pokemon wiki</h1>
       <nav aria-label="main navigation">
-        <Link className={styles.link} to="/about">About</Link>
+        <Link className={styles.link} to="/about">
+          About
+        </Link>
       </nav>
     </header>
   );
-}
+};
 
 export default Header;

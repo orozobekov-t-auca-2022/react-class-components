@@ -2,7 +2,7 @@ import styles from './Search.module.css';
 import type { ISearchProps } from './type';
 
 const Search = (props: ISearchProps) => {
-  const {value, onSubmit, onChange} = props;
+  const { value, onSubmit, onChange } = props;
   return (
     <section className="search">
       <form className={styles.searchForm} onSubmit={onSubmit}>
@@ -22,7 +22,7 @@ const Search = (props: ISearchProps) => {
         </button>
       </form>
     </section>
-  )
-}
+  );
+};
 
 export default Search;

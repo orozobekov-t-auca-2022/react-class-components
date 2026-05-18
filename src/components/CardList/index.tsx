@@ -9,8 +9,8 @@ interface IPokemonsProps {
 }
 
 const CardList = (props: IPokemonsProps) => {
-  const {results} = props;
-  return(
+  const { results } = props;
+  return (
     <>
       <section className="results">
         {results.length > 0 ? (
@@ -24,7 +24,7 @@ const CardList = (props: IPokemonsProps) => {
         )}
       </section>
     </>
-  )
-}
+  );
+};
 
 export default CardList;

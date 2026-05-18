@@ -9,7 +9,8 @@
   border-radius: 10px;
 }
 
-.title, .name{
+.title,
+.name {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -17,31 +18,31 @@
   text-align: center;
 }
 
-.title h1{
+.title h1 {
   font-size: 36px;
   font-weight: 700;
   color: violet;
 }
 
-.name h2{
+.name h2 {
   font-size: 22px;
   font-weight: 500;
   color: white;
 }
 
-.contactInfo{
+.contactInfo {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  width: 100%
+  width: 100%;
 }
 
-.contactInfo h2{
+.contactInfo h2 {
   font-size: 20px;
   color: blue;
 }
 
-.contactInfo ul{
+.contactInfo ul {
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -53,12 +54,12 @@
   background-color: #2a2a40;
 }
 
-.contactInfo ul li{
+.contactInfo ul li {
   font-size: 16px;
   color: white;
 }
 
-.reactCourseLink{
+.reactCourseLink {
   width: 100%;
   border: 1px solid blue;
   border-radius: 10px;
@@ -67,7 +68,7 @@
   align-items: center;
 }
 
-.reactCourseLink a{
+.reactCourseLink a {
   text-decoration: none;
   font-weight: 600px;
   font-size: 18px;

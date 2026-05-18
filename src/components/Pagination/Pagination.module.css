@@ -1,9 +1,9 @@
-nav{
+nav {
   display: flex;
   justify-content: center;
 }
 
-.pagination{
+.pagination {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -23,10 +23,10 @@ nav{
   cursor: pointer;
 }
 
-.page__current{
+.page__current {
   border: 2px solid violet;
   font-weight: bold;
   background: #2e4370;
   font-weight: 700;
-  text-decoration: none
+  text-decoration: none;
 }

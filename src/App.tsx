@@ -1,9 +1,4 @@
-import {
-  useEffect,
-  useState,
-  type ChangeEvent,
-  type SubmitEvent,
-} from 'react';
+import { useEffect, useState, type ChangeEvent, type SubmitEvent } from 'react';
 import styles from './App.module.css';
 import CardList from './components/CardList';
 import Search from './components/Search';
@@ -13,7 +8,7 @@ import ErrorList from './components/ErrorList';
 import ErrorBoundary from './components/ErrorBoundary';
 import Loader from './components/Loader';
 import type { IState } from './type';
-import {getPageCount, getPagesArray} from './utils/pages';
+import { getPageCount, getPagesArray } from './utils/pages';
 import Pagination from './components/Pagination';
 import { Outlet, useSearchParams } from 'react-router';
 import useLocalStorage from './hooks/useLocalStorage';
@@ -24,16 +19,18 @@ const ERROR_MESSAGE =
 const PAGE_LIMIT = 20;
 
 const App = () => {
-  const [allPokemons, setAllPokemons] = useState<{ name: string; url: string }[]>([]);
+  const [allPokemons, setAllPokemons] = useState<
+    { name: string; url: string }[]
+  >([]);
   const [data, setData] = useState<IState>({
     pokemons: {
       count: 0,
-      results:[],
+      results: [],
     },
     isLoading: true,
     error: null,
   });
-  const {isLoading, error, pokemons} = data;
+  const { isLoading, error, pokemons } = data;
   const [pagesArray, setPagesArray] = useState<number[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [savedPrompt, , savePrompt] = useLocalStorage('searchQuery', '');
@@ -43,18 +40,20 @@ const App = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      try{
+      try {
         const currentPage = page ? page : 1;
-	      const offset = (currentPage - 1) * PAGE_LIMIT;
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${PAGE_LIMIT}`);
-        if(!response.ok) {
+        const offset = (currentPage - 1) * PAGE_LIMIT;
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${PAGE_LIMIT}`
+        );
+        if (!response.ok) {
           throw new Error('Network error');
         }
 
         const data = await response.json();
         const pageCount = getPageCount(data.count, PAGE_LIMIT);
         const pages = getPagesArray(pageCount);
-	      setPagesArray(pages);
+        setPagesArray(pages);
 
         setTimeout(() => {
           setAllPokemons(data.results);
@@ -63,10 +62,9 @@ const App = () => {
                 pokemon.name.toLowerCase().includes(savedPrompt.toLowerCase())
               )
             : data.results;
-	  
 
           setData((prevData) => ({
-            ...prevData, 
+            ...prevData,
             pokemons: {
               results: filteredResults,
               count: data.count,
@@ -74,7 +72,7 @@ const App = () => {
             isLoading: false,
           }));
         }, 3000);
-      }catch(e) {
+      } catch (e) {
         if (e instanceof Error) {
           setData((prevData) => ({
             ...prevData,
@@ -90,14 +88,14 @@ const App = () => {
           }));
         }
       }
-    }
+    };
 
     loadData();
   }, [page, savedPrompt]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchPrompt(e.target.value);
-    setSearchParams({page: '1'})
+    setSearchParams({ page: '1' });
   };
 
   const handleSubmit = (e: SubmitEvent) => {
@@ -106,7 +104,7 @@ const App = () => {
     setSearchPrompt(trimmedSearch);
     savePrompt(trimmedSearch);
     filterPokemons(trimmedSearch);
-  }
+  };
 
   const filterPokemons = (searchTerm: string) => {
     const filtered = allPokemons.filter((pokemon) =>
@@ -117,11 +115,11 @@ const App = () => {
       pokemons: {
         ...prevData.pokemons,
         results: filtered,
-      }
+      },
     }));
-  }
+  };
 
-  return(
+  return (
     <ErrorBoundary>
       <div className={detailsId ? styles.splitLayout : styles.singleLayout}>
         <main className={styles.container}>
@@ -153,14 +151,14 @@ const App = () => {
           )}
           <ErrorButton />
         </main>
-        {detailsId &&
+        {detailsId && (
           <aside className={styles.sidebar} aria-label="details panel">
             <Outlet />
           </aside>
-        }
+        )}
       </div>
     </ErrorBoundary>
-  )
-}
+  );
+};
 
 export default App;
