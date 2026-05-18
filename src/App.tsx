@@ -36,9 +36,8 @@ const App = () => {
   const {isLoading, error, pokemons} = data;
   const [pagesArray, setPagesArray] = useState<number[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const detailsId = searchParams.get('detailsId');
+  const detailsId = searchParams.get('details');
   const page = Number(searchParams.get('page')) || 1;
-
   
   useEffect(() => {
     const loadData = async () => {
@@ -148,7 +147,7 @@ const App = () => {
             setSearchParams({page: `${actualPage}`})
             }} />
         </main>
-        {page &&
+        {detailsId &&
           <aside className={styles.sidebar} aria-label="details panel">
             <Outlet />
           </aside>
