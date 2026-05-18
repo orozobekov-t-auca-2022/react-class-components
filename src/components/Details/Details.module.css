@@ -1,0 +1,73 @@
+.detailsPanel{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 30px;
+}
+
+.list{
+  list-style-type: none;
+  padding: 20px 35px;
+  margin: 0;
+}
+
+.list li{
+  font-weight: 600;
+  color: white;
+}
+
+.title{
+  color: rgb(135, 135, 228);
+  font-size: 32px;
+}
+
+.image{
+  width: 200px;
+  height: 200px;
+}
+
+.abilitiesBlock{
+  border: 1px solid rgb(184, 12, 84);
+  border-radius: 10px;
+  background-color: rgb(41, 56, 56);
+}
+
+.formsBlock{
+  border: 1px solid rgb(12, 58, 184);
+  border-radius: 10px;
+  background-color: rgb(41, 56, 56);
+}
+
+.blocks{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.actionButton {
+  display: block;
+  padding: 5px 10px;
+  border: 1px solid white;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  margin: 10px 0
+}
+
+.descriptionBlock h3{
+  color: white;
+  font-weight: 700;
+}
+
+.description{
+  max-width: 420px;
+  padding: 16px 8px;
+  color: rgb(255, 145, 0);
+  line-height: 1.5;
+  text-align: center;
+  border: 1px solid rgb(255, 145, 0);
+  border-radius: 10px;
+  background-color: rgb(41, 56, 56);
+}

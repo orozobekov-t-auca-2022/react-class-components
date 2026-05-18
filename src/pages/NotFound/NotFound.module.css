@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
 
-  margin: 40px auto;
+  margin: auto auto;
 }
 
 .message{
@@ -16,9 +16,11 @@
   align-items: center;
   flex-direction: column;
 
-  tex-align: center;
+  text-align: center;
   border: 1px solid red;
   border-radius: 12px;
+
+  padding: 20px;
 }
 
 .message h2{
@@ -34,5 +36,18 @@
 
 .backHome{
   width: 100%;
-  background-color: #93c5fd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.actionButton {
+  display: block;
+  padding: 5px 10px;
+  border: 1px solid white;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  margin: 10px 0
 }

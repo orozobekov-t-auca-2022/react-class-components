@@ -35,7 +35,7 @@ const Pagination = ({pagesArray, onChange}: IPagination) => {
     <nav aria-label='pagination' className={styles.paginationWrapper}>
       <ul className={styles.pagination}>
         <li>
-          <button onClick={() => currentPage - 1 > 1 ? onChange(currentPage - 1) : onChange(pagesArray.length)}>
+          <button onClick={() => onChange(currentPage > 1 ? currentPage - 1 : 1)}>
             &laquo;
           </button>
         </li>
@@ -52,7 +52,7 @@ const Pagination = ({pagesArray, onChange}: IPagination) => {
                 )}
               <button
                 className={page === currentPage ? styles.page__current : undefined}
-                onChange={() => onChange(page)}
+                onClick={() => onChange(page)}
               >
                 {page}
               </button>
@@ -60,7 +60,7 @@ const Pagination = ({pagesArray, onChange}: IPagination) => {
             })
 	        }
         <li>
-          <button onClick={() => currentPage < pagesArray.length ? onChange(current + 1) : onChange(1)}>
+          <button onClick={() => onChange(currentPage < pagesArray.length ? currentPage + 1 : pagesArray.length)}>
             &raquo;
           </button>
         </li>

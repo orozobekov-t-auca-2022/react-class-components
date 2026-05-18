@@ -37,8 +37,25 @@ const Details = () => {
           abilities: data.abilities,
           id: data.id,
           height: data.height,
-          forms: data.forms
+          forms: data.forms,
         }))
+
+        const speciesResponse = await fetch(
+          `https://pokeapi.co/api/v2/pokemon-species/${actualDetailsId}`
+        );
+        if(!speciesResponse.ok) {
+          throw new Error('error');
+        }
+
+        const speciesData = await speciesResponse.json();
+        const pokemonDescription = speciesData.flavor_text_entries.filter(
+          (text: { language: { name: string } }) => text.language.name === 'en'
+        )[0].flavor_text;
+
+        setDetailsInfo((prevDetailsInfo) => ({
+          ...prevDetailsInfo,
+          description: pokemonDescription,
+        }));
       } catch (e) {
         console.log(e);
       } finally {
@@ -58,10 +75,11 @@ const Details = () => {
     <section className={styles.detailsPanel}>
       {!isLoading ? 
       <>
-      <h2>{detailsInfo.name}</h2>
-      <img src={detailsInfo.imgUrl} alt={detailsInfo.name} />
+      <h2 className={styles.title}>{detailsInfo.name}</h2>
+      <img className={styles.image} src={detailsInfo.imgUrl} alt={detailsInfo.name} />
 
-      <div>
+      <div className={styles.blocks}>
+        <div className={styles.abilitiesBlock}>
         <h3 className={styles.sectionTitle}>Abilities</h3>
         <ul className={styles.list}>
           {detailsInfo.abilities.map((ability: IAbility) => (
@@ -72,7 +90,7 @@ const Details = () => {
         </ul>
       </div>
 
-      <div>
+      <div className={styles.formsBlock}>
         <h3 className={styles.sectionTitle}>Forms</h3>
         <ul className={styles.list}>
           {detailsInfo.forms.map((form: IForm) => (
@@ -80,13 +98,20 @@ const Details = () => {
           ))}
         </ul>
       </div>
-
-      <div>
-        <h3 className={styles.sectionTitle}>Height</h3>
-        <p>{detailsInfo.height}</p>
       </div>
 
-      <button onClick={handleClose}>close</button>
+      <div>
+        <h3 className={styles.sectionTitle}>Height: {detailsInfo.height}</h3>
+      </div>
+
+      <div className={styles.descriptionBlock}>
+        <h3 className={styles.sectionTitle}>Description</h3>
+        <p className={styles.description}>{detailsInfo.description}</p>
+      </div>
+
+      <button className={styles.actionButton} onClick={handleClose}>
+        close
+      </button>
       </>
        : 
 	<Loader />

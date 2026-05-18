@@ -18,7 +18,7 @@ const NotFound = () => {
 	</p>
       </div>
       <div className={styles.backHome}>
-	<button onClick={handleClick}>
+        <button className={styles.actionButton} onClick={handleClick}>
 	  Back to the list
 	</button>
       </div>

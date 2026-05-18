@@ -136,16 +136,22 @@ const App = () => {
           ) : error ? (
             <ErrorList message={ERROR_MESSAGE} />
           ) : (
-            <CardList results={pokemons.results} />
+            <>
+              <CardList results={pokemons.results} />
+              <Pagination
+                pagesArray={pagesArray}
+                currentPage={page ? page : 1}
+                onChange={(actualPage: number) => {
+                  setData((prevData) => ({
+                    ...prevData,
+                    isLoading: true,
+                  }));
+                  setSearchParams({ page: `${actualPage}` });
+                }}
+              />
+            </>
           )}
           <ErrorButton />
-	        <Pagination pagesArray={pagesArray} currentPage={page ? page: 1} onChange={(actualPage: number) => {
-            setData((prevData) => ({
-		...prevData,
-		isLoading: true
-	    }));
-			setSearchParams({page: `${actualPage}`})
-            }} />
         </main>
         {detailsId &&
           <aside className={styles.sidebar} aria-label="details panel">
