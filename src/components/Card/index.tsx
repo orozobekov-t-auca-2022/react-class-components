@@ -29,7 +29,7 @@ const Card = ({name, url}: ICardProps) => {
 
       try{
         const response = await fetch(
-          `${import.meta.env.VITE_POKE_SPECIE_API_KEY}/${name}`
+          `https://pokeapi.co/api/v2/pokemon-species/${name}`
         );
         if(!response.ok) {
           throw new Error('Something went wrong');
