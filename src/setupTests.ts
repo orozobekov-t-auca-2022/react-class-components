@@ -3,10 +3,10 @@ import { afterAll, afterEach, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import { server } from './mocks/server';
 
-vi.stubEnv('VITE_POKE_API_KEY', 'https://pokeapi.co/api/v2/pokemon');
+vi.stubEnv('VITE_POKE_API_KEY', '');
 vi.stubEnv(
   'VITE_POKE_SPECIE_API_KEY',
-  'https://pokeapi.co/api/v2/pokemon-species'
+  ''
 );
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
