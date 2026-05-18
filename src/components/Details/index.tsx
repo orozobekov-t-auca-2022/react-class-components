@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import styles from './Details.module.css';
 import type { IAbility, IDetailsState, IForm } from './types';
 import { useSearchParams } from 'react-router';
+import Loader from '../Loader';
 
 const Details = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,6 +18,7 @@ const Details = () => {
     id: detailsId ? parseInt(detailsId) : 1,
     forms: []
   });
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
 
   useEffect(() => {
@@ -39,6 +41,8 @@ const Details = () => {
         }))
       } catch (e) {
         console.log(e);
+      } finally {
+	setTimeout(() => setIsLoading(false), 3000);
       }
     }
     if(!Number.isNaN(actualDetailsId)) {
@@ -52,6 +56,8 @@ const Details = () => {
 
   return(
     <section className={styles.detailsPanel}>
+      {!isLoading ? 
+      <>
       <h2>{detailsInfo.name}</h2>
       <img src={detailsInfo.imgUrl} alt={detailsInfo.name} />
 
@@ -81,6 +87,10 @@ const Details = () => {
       </div>
 
       <button onClick={handleClose}>close</button>
+      </>
+       : 
+	<Loader />
+      }
     </section>
   )
 }

@@ -120,7 +120,6 @@ const App = () => {
       pokemons: {
         ...prevData.pokemons,
         results: filtered,
-        // count: filtered.length,
       }
     }));
   }
@@ -144,7 +143,11 @@ const App = () => {
           )}
           <ErrorButton />
 	        <Pagination pagesArray={pagesArray} currentPage={page ? page: 1} onChange={(actualPage: number) => {
-            setSearchParams({page: `${actualPage}`})
+            setData((prevData) => ({
+		...prevData,
+		isLoading: true
+	    }));
+			setSearchParams({page: `${actualPage}`})
             }} />
         </main>
         {detailsId &&
