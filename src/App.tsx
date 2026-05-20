@@ -51,23 +51,26 @@ const App = () => {
         }
 
         const data = await response.json();
-        const pageCount = getPageCount(data.count, PAGE_LIMIT);
-        const pages = getPagesArray(pageCount);
-        setPagesArray(pages);
+        const hasSearchTerm = savedPrompt.trim().length > 0;
 
         setTimeout(() => {
           setAllPokemons(data.results);
-          const filteredResults = savedPrompt
+          const filteredResults = hasSearchTerm
             ? data.results.filter((pokemon: { name: string }) =>
-                pokemon.name.toLowerCase().includes(savedPrompt.toLowerCase())
+                pokemon.name
+                  .toLowerCase()
+                  .includes(savedPrompt.trim().toLowerCase())
               )
             : data.results;
+          const totalCount = hasSearchTerm ? filteredResults.length : data.count;
+
+          setPagesArray(getPagesArray(getPageCount(totalCount, PAGE_LIMIT)));
 
           setData((prevData) => ({
             ...prevData,
             pokemons: {
               results: filteredResults,
-              count: data.count,
+              count: totalCount,
             },
             isLoading: false,
           }));
@@ -107,14 +110,22 @@ const App = () => {
   };
 
   const filterPokemons = (searchTerm: string) => {
-    const filtered = allPokemons.filter((pokemon) =>
-      pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const normalizedSearchTerm = searchTerm.trim();
+    const hasSearchTerm = normalizedSearchTerm.length > 0;
+    const filtered = hasSearchTerm
+      ? allPokemons.filter((pokemon) =>
+          pokemon.name.toLowerCase().includes(normalizedSearchTerm.toLowerCase())
+        )
+      : allPokemons;
+    const totalCount = hasSearchTerm ? filtered.length : pokemons.count;
+
+    setPagesArray(getPagesArray(getPageCount(totalCount, PAGE_LIMIT)));
     setData((prevData) => ({
       ...prevData,
       pokemons: {
         ...prevData.pokemons,
         results: filtered,
+        count: totalCount,
       },
     }));
   };
@@ -136,17 +147,19 @@ const App = () => {
           ) : (
             <>
               <CardList results={pokemons.results} />
-              <Pagination
-                pagesArray={pagesArray}
-                currentPage={page ? page : 1}
-                onChange={(actualPage: number) => {
-                  setData((prevData) => ({
-                    ...prevData,
-                    isLoading: true,
-                  }));
-                  setSearchParams({ page: `${actualPage}` });
-                }}
-              />
+              {pagesArray.length > 0 && (
+                <Pagination
+                  pagesArray={pagesArray}
+                  currentPage={page ? page : 1}
+                  onChange={(actualPage: number) => {
+                    setData((prevData) => ({
+                      ...prevData,
+                      isLoading: true,
+                    }));
+                    setSearchParams({ page: `${actualPage}` });
+                  }}
+                />
+              )}
             </>
           )}
           <ErrorButton />
