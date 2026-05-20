@@ -10,5 +10,4 @@ export interface IState {
   pokemons: IPokeResponse;
   isLoading: boolean;
   error: string | null;
-  searchPrompt: string;
 }

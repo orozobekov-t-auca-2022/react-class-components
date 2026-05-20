@@ -1,0 +1,76 @@
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin: 40px auto;
+  max-width: 600px;
+  width: 100%;
+  border: 1px solid #1e1e2f;
+  border-radius: 10px;
+}
+
+.title,
+.name {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.title h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: violet;
+}
+
+.name h2 {
+  font-size: 22px;
+  font-weight: 500;
+  color: white;
+}
+
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.contactInfo h2 {
+  font-size: 20px;
+  color: blue;
+}
+
+.contactInfo ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid violet;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #2a2a40;
+}
+
+.contactInfo ul li {
+  font-size: 16px;
+  color: white;
+}
+
+.reactCourseLink {
+  width: 100%;
+  border: 1px solid blue;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reactCourseLink a {
+  text-decoration: none;
+  font-weight: 600px;
+  font-size: 18px;
+  color: #93c5fd;
+}

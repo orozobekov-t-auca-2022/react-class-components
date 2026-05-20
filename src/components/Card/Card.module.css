@@ -1,13 +1,25 @@
 .card {
-  width: 300px;
-  height: 350px;
-  border: 1px solid black;
+  width: 250px;
+  height: 300px;
+  border: 1px solid rgb(184, 12, 184);
   border-radius: 10px;
   padding: 10px;
   transition: 0.3s ease;
+  text-decoration: none;
+  background-color: rgb(41, 56, 56);
+}
+
+.card h2 {
+  color: rgb(135, 135, 228);
+  font-size: 26px;
+}
+
+.card p {
+  color: white;
+  font-size: 16px;
 }
 
 .card:hover {
-  width: 320px;
-  height: 370px;
+  width: 260px;
+  height: 310px;
 }

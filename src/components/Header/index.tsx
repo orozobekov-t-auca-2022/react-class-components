@@ -1,9 +1,17 @@
-import { Component, type ReactNode } from 'react';
+import { Link } from 'react-router';
+import styles from './Header.module.css';
 
-class Header extends Component {
-  render(): ReactNode {
-    return <h1>Pokemon wiki</h1>;
-  }
-}
+const Header = () => {
+  return (
+    <header className={styles.header}>
+      <h1>Pokemon wiki</h1>
+      <nav aria-label="main navigation">
+        <Link className={styles.link} to="/about">
+          About
+        </Link>
+      </nav>
+    </header>
+  );
+};
 
 export default Header;

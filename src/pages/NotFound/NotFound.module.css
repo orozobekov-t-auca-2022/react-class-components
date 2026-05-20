@@ -1,0 +1,53 @@
+.notFound {
+  max-width: 500px;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  margin: auto auto;
+}
+
+.message {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  text-align: center;
+  border: 1px solid red;
+  border-radius: 12px;
+
+  padding: 20px;
+}
+
+.message h2 {
+  font-size: 30px;
+  color: yellow;
+  font-weight: 500;
+}
+
+.message p {
+  font-size: 22px;
+  color: white;
+}
+
+.backHome {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.actionButton {
+  display: block;
+  padding: 5px 10px;
+  border: 1px solid white;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  margin: 10px 0;
+}

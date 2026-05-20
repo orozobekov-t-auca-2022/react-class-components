@@ -1,9 +1,4 @@
-import {
-  Component,
-  type ChangeEvent,
-  type ReactNode,
-  type SubmitEvent,
-} from 'react';
+import { useEffect, useState, type ChangeEvent, type SubmitEvent } from 'react';
 import styles from './App.module.css';
 import CardList from './components/CardList';
 import Search from './components/Search';
@@ -13,124 +8,170 @@ import ErrorList from './components/ErrorList';
 import ErrorBoundary from './components/ErrorBoundary';
 import Loader from './components/Loader';
 import type { IState } from './type';
+import { getPageCount, getPagesArray } from './utils/pages';
+import Pagination from './components/Pagination';
+import { Outlet, useSearchParams } from 'react-router';
+import useLocalStorage from './hooks/useLocalStorage';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
 
-class App extends Component<Record<string, never>, IState> {
-  private allPokemons: { name: string; url: string }[] = [];
+const PAGE_LIMIT = 20;
 
-  constructor(props: Record<string, never>) {
-    super(props);
-    this.state = {
-      pokemons: {
-        count: 0,
-        results: [],
-      },
-      isLoading: true,
-      error: null,
-      searchPrompt: '',
+const App = () => {
+  const [allPokemons, setAllPokemons] = useState<
+    { name: string; url: string }[]
+  >([]);
+  const [data, setData] = useState<IState>({
+    pokemons: {
+      count: 0,
+      results: [],
+    },
+    isLoading: true,
+    error: null,
+  });
+  const { isLoading, error, pokemons } = data;
+  const [pagesArray, setPagesArray] = useState<number[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [savedPrompt, , savePrompt] = useLocalStorage('searchQuery', '');
+  const [searchPrompt, setSearchPrompt] = useState(savedPrompt);
+  const detailsId = searchParams.get('details');
+  const page = Number(searchParams.get('page')) || 1;
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const currentPage = page ? page : 1;
+        const offset = (currentPage - 1) * PAGE_LIMIT;
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${PAGE_LIMIT}`
+        );
+        if (!response.ok) {
+          throw new Error('Network error');
+        }
+
+        const data = await response.json();
+        const hasSearchTerm = savedPrompt.trim().length > 0;
+
+        setTimeout(() => {
+          setAllPokemons(data.results);
+          const filteredResults = hasSearchTerm
+            ? data.results.filter((pokemon: { name: string }) =>
+                pokemon.name
+                  .toLowerCase()
+                  .includes(savedPrompt.trim().toLowerCase())
+              )
+            : data.results;
+          const totalCount = hasSearchTerm ? filteredResults.length : data.count;
+
+          setPagesArray(getPagesArray(getPageCount(totalCount, PAGE_LIMIT)));
+
+          setData((prevData) => ({
+            ...prevData,
+            pokemons: {
+              results: filteredResults,
+              count: totalCount,
+            },
+            isLoading: false,
+          }));
+        }, 3000);
+      } catch (e) {
+        if (e instanceof Error) {
+          setData((prevData) => ({
+            ...prevData,
+            isLoading: false,
+            error: ERROR_MESSAGE,
+          }));
+        } else {
+          console.log(`An unexpected error has occured ${e}`);
+          setData((prevData) => ({
+            ...prevData,
+            error: ERROR_MESSAGE,
+            isLoading: false,
+          }));
+        }
+      }
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.filterPokemons = this.filterPokemons.bind(this);
-  }
 
-  async componentDidMount(): Promise<void> {
-    const savedSearch = localStorage.getItem('searchQuery');
-    if (savedSearch) {
-      this.setState({ searchPrompt: savedSearch });
-    }
+    loadData();
+  }, [page, savedPrompt]);
 
-    this.setState({ isLoading: true });
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchPrompt(e.target.value);
+    setSearchParams({ page: '1' });
+  };
 
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_POKE_API_KEY}?limit=1000&offset=0`
-      );
-      if (!response.ok) {
-        throw new Error('Network error');
-      }
-      const data = await response.json();
-
-      setTimeout(() => {
-        this.allPokemons = data.results;
-
-        const filteredResults = savedSearch
-          ? data.results.filter((pokemon: { name: string }) =>
-              pokemon.name.toLowerCase().includes(savedSearch.toLowerCase())
-            )
-          : data.results;
-
-        this.setState({
-          pokemons: {
-            results: filteredResults,
-            count: data.count,
-          },
-          isLoading: false,
-        });
-      }, 3000);
-    } catch (error) {
-      if (error instanceof Error) {
-        this.setState({ error: error.message, isLoading: false });
-      } else {
-        console.log(`An unexpected error has occured ${error}`);
-        this.setState({
-          error: 'An unexpected error occured',
-          isLoading: false,
-        });
-      }
-    }
-  }
-
-  handleSubmit(e: SubmitEvent) {
+  const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
-    const trimmedSearch = this.state.searchPrompt.trim();
-    this.setState({ searchPrompt: trimmedSearch });
-    localStorage.setItem('searchQuery', trimmedSearch);
-    this.filterPokemons(trimmedSearch);
-  }
+    const trimmedSearch = searchPrompt.trim();
+    setSearchPrompt(trimmedSearch);
+    savePrompt(trimmedSearch);
+    filterPokemons(trimmedSearch);
+  };
 
-  filterPokemons(searchTerm: string) {
-    const filtered = this.allPokemons.filter((pokemon) =>
-      pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    this.setState({
+  const filterPokemons = (searchTerm: string) => {
+    const normalizedSearchTerm = searchTerm.trim();
+    const hasSearchTerm = normalizedSearchTerm.length > 0;
+    const filtered = hasSearchTerm
+      ? allPokemons.filter((pokemon) =>
+          pokemon.name.toLowerCase().includes(normalizedSearchTerm.toLowerCase())
+        )
+      : allPokemons;
+    const totalCount = hasSearchTerm ? filtered.length : pokemons.count;
+
+    setPagesArray(getPagesArray(getPageCount(totalCount, PAGE_LIMIT)));
+    setData((prevData) => ({
+      ...prevData,
       pokemons: {
+        ...prevData.pokemons,
         results: filtered,
-        count: filtered.length,
+        count: totalCount,
       },
-    });
-  }
+    }));
+  };
 
-  handleChange(e: ChangeEvent<HTMLInputElement>) {
-    this.setState({ searchPrompt: e.target.value });
-  }
-
-  render(): ReactNode {
-    const { pokemons, isLoading, error } = this.state;
-
-    return (
-      <ErrorBoundary>
+  return (
+    <ErrorBoundary>
+      <div className={detailsId ? styles.splitLayout : styles.singleLayout}>
         <main className={styles.container}>
           <Header />
           <Search
-            value={this.state.searchPrompt}
-            onChange={this.handleChange}
-            onSubmit={this.handleSubmit}
+            value={searchPrompt}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
           />
           {isLoading ? (
             <Loader data-testid="loader" />
           ) : error ? (
             <ErrorList message={ERROR_MESSAGE} />
           ) : (
-            <CardList results={pokemons.results} />
+            <>
+              <CardList results={pokemons.results} />
+              {pagesArray.length > 0 && (
+                <Pagination
+                  pagesArray={pagesArray}
+                  currentPage={page ? page : 1}
+                  onChange={(actualPage: number) => {
+                    setData((prevData) => ({
+                      ...prevData,
+                      isLoading: true,
+                    }));
+                    setSearchParams({ page: `${actualPage}` });
+                  }}
+                />
+              )}
+            </>
           )}
           <ErrorButton />
         </main>
-      </ErrorBoundary>
-    );
-  }
-}
+        {detailsId && (
+          <aside className={styles.sidebar} aria-label="details panel">
+            <Outlet />
+          </aside>
+        )}
+      </div>
+    </ErrorBoundary>
+  );
+};
 
 export default App;
