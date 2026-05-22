@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import styles from './Card.module.css';
 import type { ICardProps, ICardState } from './type';
 import { Link, useSearchParams } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { select, unselect } from '../../store/pokemons/pokemonsSlice';
+import type {RootState} from '../../store/store';
 
 const Card = ({ name, url }: ICardProps) => {
   const [pokemonInfo, setPokemonInfo] = useState<ICardState>({
@@ -12,6 +15,9 @@ const Card = ({ name, url }: ICardProps) => {
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page');
   const currentPage = page ? Number(page) : 1;
+  const dispatch = useDispatch();
+  const selectedPokemons = useSelector((state: RootState)  => state.pokemons.selectedPokemons);
+  const isCurrentSelected = selectedPokemons.find((pokemon) => pokemon === pokemonInfo.id);
 
   useEffect(() => {
     const loadData = async () => {
@@ -54,16 +60,16 @@ const Card = ({ name, url }: ICardProps) => {
   }, [name, url]);
 
   return (
-    <>
+    <div className={styles.card}>
+      <input type='checkbox' onClick={() => !isCurrentSelected ? dispatch(select(pokemonInfo.id)) : dispatch(unselect(pokemonInfo.id))} />
       <Link
         to={`/?page=${currentPage}&details=${pokemonInfo.id}`}
-        className={styles.card}
       >
         <h2>{name}</h2>
         <img src={pokemonInfo.image} alt={name} />
         <p>{pokemonInfo.description}</p>
       </Link>
-    </>
+    </div>
   );
 };
 

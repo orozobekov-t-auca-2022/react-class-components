@@ -5,9 +5,8 @@ import Search from './components/Search';
 import Header from './components/Header';
 import ErrorButton from './components/ErrorButton';
 import ErrorList from './components/ErrorList';
-import ErrorBoundary from './components/ErrorBoundary';
 import Loader from './components/Loader';
-import type { IState } from './type';
+import type { IPokemon, IState } from './type';
 import { getPageCount, getPagesArray } from './utils/pages';
 import Pagination from './components/Pagination';
 import { Outlet, useSearchParams } from 'react-router';
@@ -19,9 +18,7 @@ const ERROR_MESSAGE =
 const PAGE_LIMIT = 20;
 
 const App = () => {
-  const [allPokemons, setAllPokemons] = useState<
-    { name: string; url: string }[]
-  >([]);
+  const [allPokemons, setAllPokemons] = useState<IPokemon[]>([]);
   const [data, setData] = useState<IState>({
     pokemons: {
       count: 0,
@@ -131,7 +128,7 @@ const App = () => {
   };
 
   return (
-    <ErrorBoundary>
+    <>
       <div className={detailsId ? styles.splitLayout : styles.singleLayout}>
         <main className={styles.container}>
           <Header />
@@ -170,7 +167,7 @@ const App = () => {
           </aside>
         )}
       </div>
-    </ErrorBoundary>
+    </>
   );
 };
 
