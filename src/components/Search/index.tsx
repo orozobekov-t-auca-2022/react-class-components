@@ -1,3 +1,4 @@
+import Button from '../common/Button';
 import styles from './Search.module.css';
 import type { ISearchProps } from './type';
 
@@ -17,9 +18,9 @@ const Search = (props: ISearchProps) => {
             id="search_input"
           />
         </div>
-        <button className={styles.button} type="submit">
+        <Button className={styles.button} type="submit">
           Search
-        </button>
+        </Button>
       </form>
     </section>
   );

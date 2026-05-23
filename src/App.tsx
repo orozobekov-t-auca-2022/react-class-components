@@ -11,6 +11,9 @@ import { getPageCount, getPagesArray } from './utils/pages';
 import Pagination from './components/Pagination';
 import { Outlet, useSearchParams } from 'react-router';
 import useLocalStorage from './hooks/useLocalStorage';
+import { useSelector } from 'react-redux';
+import type { RootState } from './store/store';
+import Flyout from './components/Flyout';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
@@ -34,6 +37,8 @@ const App = () => {
   const [searchPrompt, setSearchPrompt] = useState(savedPrompt);
   const detailsId = searchParams.get('details');
   const page = Number(searchParams.get('page')) || 1;
+
+  const selectedPokemons = useSelector((state: RootState) => state.pokemons.selectedPokemons);
 
   useEffect(() => {
     const loadData = async () => {
@@ -167,6 +172,7 @@ const App = () => {
           </aside>
         )}
       </div>
+      {selectedPokemons.length > 0 && <Flyout />}
     </>
   );
 };

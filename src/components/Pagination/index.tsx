@@ -2,6 +2,7 @@ import { useSearchParams } from 'react-router';
 import styles from './Pagination.module.css';
 import type { IPagination } from './types';
 import { Fragment } from 'react/jsx-runtime';
+import Button from '../common/Button';
 
 const Pagination = ({ pagesArray, onChange }: IPagination) => {
   const [searchParams] = useSearchParams();
@@ -28,11 +29,11 @@ const Pagination = ({ pagesArray, onChange }: IPagination) => {
     <nav aria-label="pagination" className={styles.paginationWrapper}>
       <ul className={styles.pagination}>
         <li>
-          <button
+          <Button
             onClick={() => onChange(currentPage > 1 ? currentPage - 1 : 1)}
           >
             &laquo;
-          </button>
+          </Button>
         </li>
         {visiblePages.length > 0 &&
           visiblePages.map((page, index) => {
@@ -44,19 +45,19 @@ const Pagination = ({ pagesArray, onChange }: IPagination) => {
                     <span>...</span>
                   </li>
                 )}
-                <button
+                <Button
                   className={
                     page === currentPage ? styles.page__current : undefined
                   }
                   onClick={() => onChange(page)}
                 >
                   {page}
-                </button>
+                </Button>
               </Fragment>
             );
           })}
         <li>
-          <button
+          <Button
             onClick={() =>
               onChange(
                 currentPage < pagesArray.length
@@ -66,7 +67,7 @@ const Pagination = ({ pagesArray, onChange }: IPagination) => {
             }
           >
             &raquo;
-          </button>
+          </Button>
         </li>
       </ul>
     </nav>

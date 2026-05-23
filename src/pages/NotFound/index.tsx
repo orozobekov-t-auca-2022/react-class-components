@@ -1,3 +1,4 @@
+import Button from '../../components/common/Button';
 import styles from './NotFound.module.css';
 import { useNavigate } from 'react-router';
 
@@ -14,9 +15,9 @@ const NotFound = () => {
         <p>There is no page that suits your search</p>
       </div>
       <div className={styles.backHome}>
-        <button className={styles.actionButton} onClick={handleClick}>
+        <Button className={styles.actionButton} onClick={handleClick}>
           Back to the list
-        </button>
+        </Button>
       </div>
     </section>
   );

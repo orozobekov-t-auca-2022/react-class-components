@@ -16,8 +16,8 @@ const Card = ({ name, url }: ICardProps) => {
   const page = searchParams.get('page');
   const currentPage = page ? Number(page) : 1;
   const dispatch = useDispatch();
-  const selectedPokemons = useSelector((state: RootState)  => state.pokemons.selectedPokemons);
-  const isCurrentSelected = selectedPokemons.find((pokemon) => pokemon === pokemonInfo.id);
+  const selectedPokemons = useSelector((state: RootState) => state.pokemons.selectedPokemons);
+  const isCurrentSelected = selectedPokemons.includes(pokemonInfo.id);
 
   useEffect(() => {
     const loadData = async () => {
@@ -61,7 +61,10 @@ const Card = ({ name, url }: ICardProps) => {
 
   return (
     <div className={styles.card}>
-      <input type='checkbox' onClick={() => !isCurrentSelected ? dispatch(select(pokemonInfo.id)) : dispatch(unselect(pokemonInfo.id))} />
+      <input
+        type='checkbox'
+        checked={isCurrentSelected}
+        onClick={() => !isCurrentSelected ? dispatch(select(pokemonInfo.id)) : dispatch(unselect(pokemonInfo.id))} />
       <Link
         to={`/?page=${currentPage}&details=${pokemonInfo.id}`}
       >

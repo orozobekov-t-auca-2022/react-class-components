@@ -3,6 +3,7 @@ import styles from './Details.module.css';
 import type { IAbility, IDetailsState, IForm } from './types';
 import { useSearchParams } from 'react-router';
 import Loader from '../Loader';
+import Button from '../common/Button';
 
 const Details = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -116,9 +117,9 @@ const Details = () => {
             <p className={styles.description}>{detailsInfo.description}</p>
           </div>
 
-          <button className={styles.actionButton} onClick={handleClose}>
+          <Button className={styles.actionButton} onClick={handleClose}>
             close
-          </button>
+          </Button>
         </>
       ) : (
         <Loader />

@@ -15,14 +15,6 @@ nav {
   display: flex;
 }
 
-.pagination button {
-  display: block;
-  padding: 0.5em 1em;
-  border: 1px solid white;
-  border-radius: 0.2em;
-  cursor: pointer;
-}
-
 .page__current {
   border: 2px solid violet;
   font-weight: bold;

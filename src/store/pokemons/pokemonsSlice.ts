@@ -17,10 +17,13 @@ const pokemonsSlice = createSlice({
     },
     unselect: (state, payload) => {
       state.selectedPokemons = state.selectedPokemons.filter((pokemon) => pokemon !== payload.payload)
+    },
+    unselectAll: (state) => {
+      state.selectedPokemons = []
     }
   }
 });
 
-export const {select, unselect} = pokemonsSlice.actions;
+export const {select, unselect, unselectAll} = pokemonsSlice.actions;
 
 export default pokemonsSlice.reducer;
