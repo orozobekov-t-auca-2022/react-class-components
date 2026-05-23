@@ -1,23 +1,21 @@
 import { useEffect, useState } from 'react';
 import styles from './Card.module.css';
-import type { ICardProps, ICardState } from './type';
 import { Link, useSearchParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { select, unselect } from '../../store/pokemons/pokemonsSlice';
 import type {RootState} from '../../store/store';
+import type { IPokemon } from '../../type';
 
-const Card = ({ name, url }: ICardProps) => {
-  const [pokemonInfo, setPokemonInfo] = useState<ICardState>({
-    image: '',
-    description: '',
-    id: -1,
-  });
+const Card = (pokemon: IPokemon) => {
+  const {id, name, url} = pokemon;
+  const [description, setDescription] = useState<string>('');
+  const [image, setImage] = useState<string>('');
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page');
   const currentPage = page ? Number(page) : 1;
   const dispatch = useDispatch();
   const selectedPokemons = useSelector((state: RootState) => state.pokemons.selectedPokemons);
-  const isCurrentSelected = selectedPokemons.includes(pokemonInfo.id);
+  const isCurrentSelected = selectedPokemons.some((selectedPokemon) => selectedPokemon.id === id);
 
   useEffect(() => {
     const loadData = async () => {
@@ -28,11 +26,7 @@ const Card = ({ name, url }: ICardProps) => {
           throw new Error('Something wrong with response');
         }
         const data = await response.json();
-        setPokemonInfo((prevInfo) => ({
-          ...prevInfo,
-          image: data.sprites.front_default,
-          id: data.id,
-        }));
+        setImage(data.sprites.front_default);
       } catch (e) {
         console.log(e);
       }
@@ -48,10 +42,7 @@ const Card = ({ name, url }: ICardProps) => {
         const pokemonDescription = data.flavor_text_entries.filter(
           (text: { language: { name: string } }) => text.language.name === 'en'
         )[0].flavor_text;
-        setPokemonInfo((prevInfo) => ({
-          ...prevInfo,
-          description: pokemonDescription,
-        }));
+        setDescription(pokemonDescription);
       } catch (e) {
         console.log(e);
       }
@@ -64,13 +55,13 @@ const Card = ({ name, url }: ICardProps) => {
       <input
         type='checkbox'
         checked={isCurrentSelected}
-        onClick={() => !isCurrentSelected ? dispatch(select(pokemonInfo.id)) : dispatch(unselect(pokemonInfo.id))} />
+        onChange={() => !isCurrentSelected ? dispatch(select(pokemon)) : dispatch(unselect(id))} />
       <Link
-        to={`/?page=${currentPage}&details=${pokemonInfo.id}`}
+        to={`/?page=${currentPage}&details=${id}`}
       >
         <h2>{name}</h2>
-        <img src={pokemonInfo.image} alt={name} />
-        <p>{pokemonInfo.description}</p>
+        <img src={image} alt={name} />
+        <p>{description}</p>
       </Link>
     </div>
   );

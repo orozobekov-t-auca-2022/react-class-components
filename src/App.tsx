@@ -20,6 +20,11 @@ const ERROR_MESSAGE =
 
 const PAGE_LIMIT = 20;
 
+const getPokemonIdFromUrl = (url: string) => {
+  const match = url.match(/\/pokemon\/(\d+)\//);
+  return match ? Number(match[1]) : -1;
+};
+
 const App = () => {
   const [allPokemons, setAllPokemons] = useState<IPokemon[]>([]);
   const [data, setData] = useState<IState>({
@@ -54,16 +59,20 @@ const App = () => {
 
         const data = await response.json();
         const hasSearchTerm = savedPrompt.trim().length > 0;
+        const resultsWithIds = data.results.map((pokemon: IPokemon) => ({
+          ...pokemon,
+          id: getPokemonIdFromUrl(pokemon.url),
+        }));
 
         setTimeout(() => {
-          setAllPokemons(data.results);
+          setAllPokemons(resultsWithIds);
           const filteredResults = hasSearchTerm
-            ? data.results.filter((pokemon: { name: string }) =>
+            ? resultsWithIds.filter((pokemon: { name: string }) =>
                 pokemon.name
                   .toLowerCase()
                   .includes(savedPrompt.trim().toLowerCase())
               )
-            : data.results;
+            : resultsWithIds;
           const totalCount = hasSearchTerm ? filteredResults.length : data.count;
 
           setPagesArray(getPagesArray(getPageCount(totalCount, PAGE_LIMIT)));
@@ -148,7 +157,7 @@ const App = () => {
             <ErrorList message={ERROR_MESSAGE} />
           ) : (
             <>
-              <CardList results={pokemons.results} />
+              <CardList {...pokemons} />
               {pagesArray.length > 0 && (
                 <Pagination
                   pagesArray={pagesArray}

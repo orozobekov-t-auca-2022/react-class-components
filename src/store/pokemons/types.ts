@@ -1,3 +1,5 @@
+import type { IPokemon } from '../../type';
+
 export interface IState {
-  selectedPokemons: number[];
+  selectedPokemons: IPokemon[];
 }
