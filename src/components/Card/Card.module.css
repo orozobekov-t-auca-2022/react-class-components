@@ -1,25 +1,30 @@
 .card {
   width: 250px;
   height: 300px;
-  border: 1px solid rgb(184, 12, 184);
+  border: 1px solid var(--accent-border);
   border-radius: 10px;
   padding: 10px;
   transition: 0.3s ease;
   text-decoration: none;
-  background-color: rgb(41, 56, 56);
+  background-color: var(--accent-bg);
 }
 
 .card h2 {
-  color: rgb(135, 135, 228);
+  color: var(--accent);
   font-size: 26px;
 }
 
 .card p {
-  color: white;
+  color: var(--text);
   font-size: 16px;
+  text-decoration: none;
 }
 
 .card:hover {
   width: 260px;
   height: 310px;
+}
+
+.checkbox{
+  color: var(--text);
 }

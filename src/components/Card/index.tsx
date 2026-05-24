@@ -55,8 +55,11 @@ const Card = (pokemon: IPokemon) => {
       <input
         type='checkbox'
         checked={isCurrentSelected}
-        onChange={() => !isCurrentSelected ? dispatch(select(pokemon)) : dispatch(unselect(id))} />
+        onChange={() => !isCurrentSelected ? dispatch(select(pokemon)) : dispatch(unselect(id))}
+        className={styles.checkbox}
+        />
       <Link
+        style={{textDecoration: 'none'}}
         to={`/?page=${currentPage}&details=${id}`}
       >
         <h2>{name}</h2>

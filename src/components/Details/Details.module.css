@@ -11,15 +11,16 @@
   list-style-type: none;
   padding: 20px 35px;
   margin: 0;
+  color: var(--accent);
 }
 
 .list li {
   font-weight: 600;
-  color: white;
+  color: var(--text);
 }
 
 .title {
-  color: rgb(135, 135, 228);
+  color: var(--accent);
   font-size: 32px;
 }
 
@@ -28,16 +29,20 @@
   height: 200px;
 }
 
+h3{
+  color: var(--text)
+}
+
 .abilitiesBlock {
   border: 1px solid rgb(184, 12, 84);
   border-radius: 10px;
-  background-color: rgb(41, 56, 56);
+  background-color: var(--accent-bg);
 }
 
 .formsBlock {
   border: 1px solid rgb(12, 58, 184);
   border-radius: 10px;
-  background-color: rgb(41, 56, 56);
+  background-color: var(--accent-bg);
 }
 
 .blocks {
@@ -53,7 +58,7 @@
 }
 
 .descriptionBlock h3 {
-  color: white;
+  color: var(--accent);
   font-weight: 700;
 }
 
@@ -65,5 +70,5 @@
   text-align: center;
   border: 1px solid rgb(255, 145, 0);
   border-radius: 10px;
-  background-color: rgb(41, 56, 56);
+  background-color: var(--accent-bg);
 }

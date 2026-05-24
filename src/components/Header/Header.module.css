@@ -8,3 +8,13 @@
   text-decoration: none;
   font-size: 26px;
 }
+
+.header nav{
+  display: flex;
+  gap: 20px;
+}
+
+.themeButton{
+  background: none;
+  border: none;
+}
