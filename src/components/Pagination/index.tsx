@@ -3,21 +3,11 @@ import styles from './Pagination.module.css';
 import type { IPagination } from './types';
 import { Fragment } from 'react/jsx-runtime';
 import Button from '../common/Button';
+import getVisiblePages from './utils/getVisiblePages';
 
 const Pagination = ({ pagesArray, onChange }: IPagination) => {
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page');
-  const getVisiblePages = (totalPages: number[], currentPage: number) => {
-    const delta = 2;
-
-    return totalPages.filter((page) => {
-      return (
-        page === 1 ||
-        page === totalPages.length ||
-        (page >= currentPage - delta && page <= currentPage + delta)
-      );
-    });
-  };
 
   const current = Number(page ? page : 1);
 
@@ -30,6 +20,7 @@ const Pagination = ({ pagesArray, onChange }: IPagination) => {
       <ul className={styles.pagination}>
         <li>
           <Button
+            disabled={current === 1 ? true: false}
             onClick={() => onChange(currentPage > 1 ? currentPage - 1 : 1)}
           >
             &laquo;
@@ -58,6 +49,7 @@ const Pagination = ({ pagesArray, onChange }: IPagination) => {
           })}
         <li>
           <Button
+            disabled={current === visiblePages.length ? true: false}
             onClick={() =>
               onChange(
                 currentPage < pagesArray.length

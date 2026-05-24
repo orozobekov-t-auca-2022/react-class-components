@@ -51,22 +51,22 @@ const Card = (pokemon: IPokemon) => {
   }, [name, url]);
 
   return (
-    <div className={styles.card}>
-      <input
-        type='checkbox'
-        checked={isCurrentSelected}
-        onChange={() => !isCurrentSelected ? dispatch(select(pokemon)) : dispatch(unselect(id))}
-        className={styles.checkbox}
-        />
       <Link
+        className={styles.card}
         style={{textDecoration: 'none'}}
         to={`/?page=${currentPage}&details=${id}`}
       >
+          <input
+        type='checkbox'
+        checked={isCurrentSelected}
+        onClick={(e) => e.stopPropagation()}
+        onChange={() => !isCurrentSelected ? dispatch(select(pokemon)) : dispatch(unselect(id))}
+        className={styles.checkbox}
+        />
         <h2>{name}</h2>
         <img src={image} alt={name} />
         <p>{description}</p>
       </Link>
-    </div>
   );
 };
 

@@ -3,25 +3,32 @@ import App from './App';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
 import Details from './components/Details';
+import Layout from './components/Layout';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    Component: App,
+    Component: Layout,
     children: [
       {
         path: '',
-        Component: Details,
+        Component: App,
+        children: [
+          {
+            path: '',
+            Component: Details,
+          },
+        ],
+      },
+      {
+        path: 'about',
+        Component: About,
+      },
+      {
+        path: '*',
+        Component: NotFound,
       },
     ],
-  },
-  {
-    path: '/about',
-    Component: About,
-  },
-  {
-    path: '*',
-    Component: NotFound,
   },
 ]);
 

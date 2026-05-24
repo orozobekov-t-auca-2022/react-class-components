@@ -2,7 +2,6 @@ import { useEffect, useState, type ChangeEvent, type SubmitEvent } from 'react';
 import styles from './App.module.css';
 import CardList from './components/CardList';
 import Search from './components/Search';
-import Header from './components/Header';
 import ErrorButton from './components/ErrorButton';
 import ErrorList from './components/ErrorList';
 import Loader from './components/Loader';
@@ -145,7 +144,6 @@ const App = () => {
     <>
       <div className={detailsId ? styles.splitLayout : styles.singleLayout}>
         <main className={styles.container}>
-          <Header />
           <Search
             value={searchPrompt}
             onChange={handleChange}

@@ -9,8 +9,6 @@ vi.mock('react-redux', () => ({
   useDispatch: vi.fn(),
 }));
 
-// do not mock the download util; assert download behavior via DOM spies
-
 const mockDispatch = vi.fn();
 
 beforeEach(() => {
@@ -69,7 +67,6 @@ describe('Flyout component', () => {
       })
     );
 
-    // spy on URL.createObjectURL and document methods to verify download flow
     const createObjectUrlSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock');
     const revokeSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
 
@@ -96,7 +93,6 @@ describe('Flyout component', () => {
     expect(removeSpy).toHaveBeenCalled();
     expect(revokeSpy).toHaveBeenCalled();
 
-    // restore spies
     createObjectUrlSpy.mockRestore();
     revokeSpy.mockRestore();
     (document.createElement as unknown as Mock).mockRestore();

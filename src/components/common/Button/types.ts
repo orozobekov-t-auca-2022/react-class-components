@@ -5,4 +5,5 @@ export interface IButton {
   onClick?: () => void,
   type?: ButtonHTMLAttributes<HTMLButtonElement>['type'],
   className?: string,
+  disabled?: boolean,
 }
