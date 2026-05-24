@@ -1,13 +1,7 @@
-import Button from '../../components/common/Button';
 import styles from './NotFound.module.css';
-import { useNavigate } from 'react-router';
+import { Link } from 'react-router';
 
 const NotFound = () => {
-  const navigate = useNavigate();
-  const handleClick = () => {
-    navigate('/');
-  };
-
   return (
     <section className={styles.notFound}>
       <div className={styles.message}>
@@ -15,9 +9,9 @@ const NotFound = () => {
         <p>There is no page that suits your search</p>
       </div>
       <div className={styles.backHome}>
-        <Button className={styles.actionButton} onClick={handleClick}>
+        <Link to={'/'} className={styles.actionButton}>
           Back to the list
-        </Button>
+        </Link>
       </div>
     </section>
   );

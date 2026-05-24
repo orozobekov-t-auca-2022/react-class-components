@@ -1,0 +1,18 @@
+import type { IPokemon } from "../../../type";
+
+export const createPokemonCsv = (selectedPokemons : IPokemon[], selectedAmount : number) => {
+  const finalString = selectedPokemons.map((selected) => `${selected.id},${selected.name},${selected.url}`).join('\n');
+
+  const blob = new Blob([finalString], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `${selectedAmount}_items.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}

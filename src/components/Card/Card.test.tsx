@@ -6,6 +6,7 @@ import { http, HttpResponse } from 'msw';
 
 describe('Card Component', () => {
   const pokemon = {
+    id: 4,
     name: 'charmander',
     url: 'https://pokeapi.co/api/v2/pokemon/4/',
   };
