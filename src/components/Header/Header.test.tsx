@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 import { render, screen } from '../../test-utils/render';
-import Header from '.';
+import Header from './Header';
 
 describe('Header Component', () => {
   it('renders the application title', () => {

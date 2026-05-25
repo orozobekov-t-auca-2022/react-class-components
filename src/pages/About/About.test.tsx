@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import About from '.';
+import About from './About';
 
 describe('About page', () => {
   it('renders about page content', () => {

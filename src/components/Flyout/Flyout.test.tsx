@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import Flyout from '.';
+import Flyout from './Flyout';
 import { useDispatch, useSelector } from 'react-redux';
 import { unselectAll } from '../../store/pokemons/pokemonsSlice';
 import { vi, type Mock } from 'vitest';

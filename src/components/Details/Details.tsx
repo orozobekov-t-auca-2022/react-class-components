@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import styles from './Details.module.css';
 import type { IAbility, IDetailsState, IForm } from './types';
 import { useSearchParams } from 'react-router';
-import Loader from '../Loader';
-import Button from '../common/Button';
+import Loader from '../Loader/Loader';
+import Button from '../common/Button/Button';
 
 const Details = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,7 +16,7 @@ const Details = () => {
     imgUrl: '',
     abilities: [],
     height: -1,
-    id: detailsId ? parseInt(detailsId) : 1,
+    id: detailsId ? actualDetailsId : 1,
     forms: [],
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);

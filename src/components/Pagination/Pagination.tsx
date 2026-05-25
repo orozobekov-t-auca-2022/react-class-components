@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router';
 import styles from './Pagination.module.css';
 import type { IPagination } from './types';
 import { Fragment } from 'react/jsx-runtime';
-import Button from '../common/Button';
+import Button from '../common/Button/Button';
 import getVisiblePages from './utils/getVisiblePages';
 
 const Pagination = ({ pagesArray, onChange }: IPagination) => {

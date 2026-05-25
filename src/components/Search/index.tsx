@@ -1,4 +1,4 @@
-import Button from '../common/Button';
+import Button from '../common/Button/Button';
 import styles from './Search.module.css';
 import type { ISearchProps } from './type';
 

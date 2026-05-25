@@ -5,7 +5,7 @@ import {
 } from '@testing-library/react';
 import { act } from 'react';
 import { MemoryRouter } from 'react-router';
-import Details from '.';
+import Details from './Details';
 import { it, vi, type Mock } from 'vitest';
 
 describe('Details component', () => {

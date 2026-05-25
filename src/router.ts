@@ -1,14 +1,17 @@
 import { createBrowserRouter } from 'react-router';
+import { createElement } from 'react';
 import App from './App';
-import About from './pages/About';
-import NotFound from './pages/NotFound';
-import Details from './components/Details';
-import Layout from './components/Layout';
+import About from './pages/About/About';
+import NotFound from './pages/NotFound/NotFound';
+import Details from './components/Details/Details';
+import Layout from './components/Layout/Layout';
+import ErrorFallback from './components/ErrorFallback/ErrorFallback';
 
 const router = createBrowserRouter([
   {
     path: '/',
     Component: Layout,
+    errorElement: createElement(ErrorFallback),
     children: [
       {
         path: '',

@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from 'react-redux';
 import styles from './Flyout.module.css';
 import type { RootState } from '../../store/store';
-import Button from '../common/Button';
+import Button from '../common/Button/Button';
 import { unselectAll } from '../../store/pokemons/pokemonsSlice';
 import { createPokemonCsv } from './utils/createPokemonCsv';
 

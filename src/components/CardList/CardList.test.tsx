@@ -1,6 +1,6 @@
 import { render, screen } from '../../test-utils/render';
 import { describe, expect, it, vi } from 'vitest';
-import CardList from '.';
+import CardList from './CardList';
 import type { IPokeResponse } from '../../type';
 
 vi.mock('../Card', () => ({

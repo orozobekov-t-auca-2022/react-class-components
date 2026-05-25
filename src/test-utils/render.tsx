@@ -7,7 +7,7 @@ import type { ReactElement } from 'react';
 import { MemoryRouter } from 'react-router';
 import { Provider } from 'react-redux';
 import { setupStore } from '../store/store';
-import ErrorBoundary from '../components/ErrorBoundary';
+import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
 import { ThemeProvider } from '../theme';
 
 function render(ui: ReactElement, options?: RenderOptions) {

@@ -1,6 +1,6 @@
 import { render, screen } from '../../test-utils/render';
 import { describe, vi } from 'vitest';
-import ErrorBoundary from '.';
+import ErrorBoundary from './ErrorBoundary';
 
 const ThrowError = ({ shouldThrow }: { shouldThrow?: boolean }) => {
   if (shouldThrow) {

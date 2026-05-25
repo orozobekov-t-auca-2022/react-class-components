@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router';
-import NotFound from '.';
+import NotFound from './NotFound';
 
 describe('NotFound page', () => {
   it('navigates to home page after click', () => {

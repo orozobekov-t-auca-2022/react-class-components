@@ -1,18 +1,18 @@
 import { useEffect, useState, type ChangeEvent, type SubmitEvent } from 'react';
 import styles from './App.module.css';
-import CardList from './components/CardList';
+import CardList from './components/CardList/CardList';
 import Search from './components/Search';
-import ErrorButton from './components/ErrorButton';
-import ErrorList from './components/ErrorList';
-import Loader from './components/Loader';
+import ErrorButton from './components/ErrorButton/ErrorButton';
+import ErrorList from './components/ErrorList/ErrorList';
+import Loader from './components/Loader/Loader';
 import type { IPokemon, IState } from './type';
 import { getPageCount, getPagesArray } from './utils/pages';
-import Pagination from './components/Pagination';
+import Pagination from './components/Pagination/Pagination';
 import { Outlet, useSearchParams } from 'react-router';
 import useLocalStorage from './hooks/useLocalStorage';
 import { useSelector } from 'react-redux';
 import type { RootState } from './store/store';
-import Flyout from './components/Flyout';
+import Flyout from './components/Flyout/Flyout';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';

@@ -1,5 +1,5 @@
 import styles from './CardList.module.css';
-import Card from '../Card';
+import Card from '../Card/Card';
 import type { IPokemon, IPokeResponse } from '../../type';
 
 

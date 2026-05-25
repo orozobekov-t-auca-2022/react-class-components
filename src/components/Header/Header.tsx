@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router';
 import styles from './Header.module.css';
 import { useTheme } from '../../hooks/useTheme';
-import Button from '../common/Button';
+import Button from '../common/Button/Button';
 import LightModeSvg from './assets/LightModeSvg';
 import DarkModeSvg from './assets/DarkModeSvg';
 

@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
-import styles from './ErrorBoundary.module.css';
+import ErrorFallback from '../ErrorFallback/ErrorFallback';
 
 interface IErrorBoundaryProps {
   children: ReactNode;
@@ -30,12 +30,7 @@ class ErrorBoundary extends Component<
   
   render(): ReactNode {
     if (this.state.hasError) {
-      return (
-        <section className={styles.errorBoundary}>
-          <h2 className={styles.emoji}>🐱</h2>
-          <h2>Oops, something went wrong. Please, visit this website later</h2>
-        </section>
-      );
+      return <ErrorFallback />;
     }
     return this.props.children;
   }
