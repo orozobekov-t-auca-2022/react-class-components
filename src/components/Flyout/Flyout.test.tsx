@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Flyout from './Flyout';
 import { useDispatch, useSelector } from 'react-redux';
 import { unselectAll } from '../../store/pokemons/pokemonsSlice';
@@ -53,10 +53,10 @@ describe('Flyout component', () => {
   expect(mockDispatch).toHaveBeenCalledWith(unselectAll());
   });
 
-  it('calls createPokemonCsv with selected items on download click', () => {
+  it('calls createPokemonCsv with selected items on download click', async () => {
     const selected = [
-      { id: 1, name: 'pikachu', url: 'url1' },
-      { id: 2, name: 'bulbasaur', url: 'url2' },
+      { id: 1, name: 'pikachu', url: 'url1', description: 'pikachu desc' },
+      { id: 2, name: 'bulbasaur', url: 'url2', description: 'bulbasaur desc' },
     ];
 
     (useSelector as unknown as Mock).mockImplementation((cb) =>
@@ -87,11 +87,13 @@ describe('Flyout component', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /download/i }));
 
-    expect(createObjectUrlSpy).toHaveBeenCalled();
-    expect(appendSpy).toHaveBeenCalled();
-    expect(clickMock).toHaveBeenCalled();
-    expect(removeSpy).toHaveBeenCalled();
-    expect(revokeSpy).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(createObjectUrlSpy).toHaveBeenCalled();
+      expect(appendSpy).toHaveBeenCalled();
+      expect(clickMock).toHaveBeenCalled();
+      expect(removeSpy).toHaveBeenCalled();
+      expect(revokeSpy).toHaveBeenCalled();
+    });
 
     createObjectUrlSpy.mockRestore();
     revokeSpy.mockRestore();

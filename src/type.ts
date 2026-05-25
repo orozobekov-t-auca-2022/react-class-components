@@ -12,5 +12,6 @@ export interface IState {
 export interface IPokemon{
   name: string;
   url: string;
-  id: number
+  id: number;
+  description?: string;
 }

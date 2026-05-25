@@ -60,7 +60,7 @@ const Card = (pokemon: IPokemon) => {
         type='checkbox'
         checked={isCurrentSelected}
         onClick={(e) => e.stopPropagation()}
-        onChange={() => !isCurrentSelected ? dispatch(select(pokemon)) : dispatch(unselect(id))}
+        onChange={() => !isCurrentSelected ? dispatch(select({...pokemon, description})) : dispatch(unselect(id))}
         className={styles.checkbox}
         />
         <h2>{name}</h2>

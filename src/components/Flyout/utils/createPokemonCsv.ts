@@ -1,9 +1,54 @@
 import type { IPokemon } from "../../../type";
 
-export const createPokemonCsv = (selectedPokemons : IPokemon[], selectedAmount : number) => {
-  const finalString = selectedPokemons.map((selected) => `${selected.id},${selected.name},${selected.url}`).join('\n');
+const escapeCsvValue = (value: string) => {
+  return `"${value
+    .replace(/"/g, '""')
+    .replace(/\r/g, ' ')
+    .replace(/\n/g, ' ')}"`;
+};
 
-  const blob = new Blob([finalString], { type: 'text/csv;charset=utf-8;' });
+const fetchDescription = async (pokemon: IPokemon) => {
+  if (pokemon.description) {
+    return pokemon.description;
+  }
+
+  try {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}`);
+    if (!res.ok) {
+      return '';
+    }
+
+    const data = await res.json();
+
+    const entry = data.flavor_text_entries.find(
+      (t: { language: { name: string } }) => t.language.name === 'en'
+    );
+    
+    return entry?.flavor_text ?? '';
+  } catch {
+    return '';
+  }
+};
+
+export const createPokemonCsv = async (
+  selectedPokemons: IPokemon[],
+  selectedAmount: number
+): Promise<void> => {
+  const rows: string[][] = [];
+  rows.push(['id', 'name', 'description', 'api_url']);
+
+  for (const p of selectedPokemons) {
+    const description = await fetchDescription(p);
+    rows.push([String(p.id), p.name, description ?? '', p.url]);
+  }
+
+  const csvContent = rows
+    .map((row) => row.map((v) => escapeCsvValue(String(v))).join(','))
+    .join('\r\n');
+
+  // prepend BOM for Excel compatibility on Windows
+  const bom = '\uFEFF';
+  const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
 
   const link = document.createElement('a');
@@ -15,4 +60,4 @@ export const createPokemonCsv = (selectedPokemons : IPokemon[], selectedAmount :
 
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
-}
+};
