@@ -10,7 +10,7 @@ import { ThemeProvider } from './theme/index.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider >
+    <ThemeProvider>
       <Provider store={setupStore()}>
         <ErrorBoundary>
           <RouterProvider router={router} />

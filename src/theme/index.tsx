@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { ThemeContext } from './ThemeContext';
 
-export const ThemeProvider = ({children} : {children: ReactNode}) => {
+export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<string>(() => {
     try {
       const savedTheme = localStorage.getItem('theme');
@@ -10,10 +10,13 @@ export const ThemeProvider = ({children} : {children: ReactNode}) => {
         return savedTheme;
       }
     } catch {
-      console.log('localstorage error')
+      console.log('localstorage error');
     }
 
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
       return 'dark';
     }
 
@@ -31,12 +34,12 @@ export const ThemeProvider = ({children} : {children: ReactNode}) => {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'))
-  }
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
 
   return (
-    <ThemeContext.Provider value={{theme, toggleTheme}}>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
-}
+};

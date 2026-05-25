@@ -20,7 +20,7 @@ const Pagination = ({ pagesArray, onChange }: IPagination) => {
       <ul className={styles.pagination}>
         <li>
           <Button
-            disabled={current === 1 ? true: false}
+            disabled={current === 1 ? true : false}
             onClick={() => onChange(currentPage > 1 ? currentPage - 1 : 1)}
           >
             &laquo;
@@ -49,7 +49,7 @@ const Pagination = ({ pagesArray, onChange }: IPagination) => {
           })}
         <li>
           <Button
-            disabled={current === visiblePages.length ? true: false}
+            disabled={current === visiblePages.length ? true : false}
             onClick={() =>
               onChange(
                 currentPage < pagesArray.length

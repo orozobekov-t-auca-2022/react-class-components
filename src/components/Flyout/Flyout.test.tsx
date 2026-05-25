@@ -17,40 +17,38 @@ beforeEach(() => {
 
 describe('Flyout component', () => {
   it('renders selected amount', () => {
-  (useSelector as unknown as Mock).mockImplementation((cb) =>
-    cb({
-      pokemons: {
-        selectedPokemons: [
-          { id: 1, name: 'pikachu', url: 'url1' },
-          { id: 2, name: 'bulbasaur', url: 'url2' },
-        ],
-      },
-    })
-  );
+    (useSelector as unknown as Mock).mockImplementation((cb) =>
+      cb({
+        pokemons: {
+          selectedPokemons: [
+            { id: 1, name: 'pikachu', url: 'url1' },
+            { id: 2, name: 'bulbasaur', url: 'url2' },
+          ],
+        },
+      })
+    );
 
-  render(<Flyout />);
+    render(<Flyout />);
 
-  expect(
-    screen.getByText(/selected items: 2/i)
-  ).toBeInTheDocument();
+    expect(screen.getByText(/selected items: 2/i)).toBeInTheDocument();
   });
 
   it('dispatches unselectAll on click', () => {
-  (useSelector as unknown as Mock).mockReturnValue({
-    pokemons: {
-      selectedPokemons: [],
-    },
-  });
+    (useSelector as unknown as Mock).mockReturnValue({
+      pokemons: {
+        selectedPokemons: [],
+      },
+    });
 
-  render(<Flyout />);
+    render(<Flyout />);
 
-  fireEvent.click(
-    screen.getByRole('button', {
-      name: /unselect all/i,
-    })
-  );
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /unselect all/i,
+      })
+    );
 
-  expect(mockDispatch).toHaveBeenCalledWith(unselectAll());
+    expect(mockDispatch).toHaveBeenCalledWith(unselectAll());
   });
 
   it('calls createPokemonCsv with selected items on download click', async () => {
@@ -67,21 +65,27 @@ describe('Flyout component', () => {
       })
     );
 
-    const createObjectUrlSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock');
-    const revokeSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    const createObjectUrlSpy = vi
+      .spyOn(URL, 'createObjectURL')
+      .mockReturnValue('blob:mock');
+    const revokeSpy = vi
+      .spyOn(URL, 'revokeObjectURL')
+      .mockImplementation(() => {});
 
     const originalCreateElement = document.createElement.bind(document);
     const clickMock = vi.fn();
     const appendSpy = vi.spyOn(document.body, 'appendChild');
     const removeSpy = vi.spyOn(document.body, 'removeChild');
 
-    vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
-      const el = originalCreateElement(tagName) as HTMLAnchorElement;
-      if (tagName === 'a') {
-        el.click = clickMock;
+    vi.spyOn(document, 'createElement').mockImplementation(
+      (tagName: string) => {
+        const el = originalCreateElement(tagName) as HTMLAnchorElement;
+        if (tagName === 'a') {
+          el.click = clickMock;
+        }
+        return el;
       }
-      return el;
-    });
+    );
 
     render(<Flyout />);
 
@@ -101,4 +105,4 @@ describe('Flyout component', () => {
     appendSpy.mockRestore();
     removeSpy.mockRestore();
   });
-})
+});

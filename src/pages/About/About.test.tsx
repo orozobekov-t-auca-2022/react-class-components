@@ -11,21 +11,13 @@ describe('About page', () => {
       })
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByText(/author: tilek/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/author: tilek/i)).toBeInTheDocument();
 
-    expect(
-      screen.getByText(/discord:/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/discord:/i)).toBeInTheDocument();
 
-    expect(
-      screen.getByText(/telegram:/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/telegram:/i)).toBeInTheDocument();
 
-    expect(
-      screen.getByText(/linkedin:/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/linkedin:/i)).toBeInTheDocument();
   });
 
   it('renders react course link', () => {
@@ -37,9 +29,6 @@ describe('About page', () => {
 
     expect(link).toBeInTheDocument();
 
-    expect(link).toHaveAttribute(
-      'href',
-      'https://rs.school/courses/reactjs'
-    );
+    expect(link).toHaveAttribute('href', 'https://rs.school/courses/reactjs');
   });
 });

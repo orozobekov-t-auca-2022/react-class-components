@@ -12,10 +12,22 @@ describe('CardList Component', () => {
     const items: IPokeResponse = {
       count: 3,
       results: [
-        { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/', id: 1 },
-        { name: 'charizard', url: 'https://pokeapi.co/api/v2/pokemon/6/', id: 6 },
-        { name: 'blastoise', url: 'https://pokeapi.co/api/v2/pokemon/9/', id: 9 },
-      ]
+        {
+          name: 'bulbasaur',
+          url: 'https://pokeapi.co/api/v2/pokemon/1/',
+          id: 1,
+        },
+        {
+          name: 'charizard',
+          url: 'https://pokeapi.co/api/v2/pokemon/6/',
+          id: 6,
+        },
+        {
+          name: 'blastoise',
+          url: 'https://pokeapi.co/api/v2/pokemon/9/',
+          id: 9,
+        },
+      ],
     };
 
     render(<CardList {...items} />);
@@ -29,7 +41,7 @@ describe('CardList Component', () => {
   it('displays appropriate message when the results array is empty', () => {
     const items: IPokeResponse = {
       count: 0,
-      results: []
+      results: [],
     };
     render(<CardList {...items} />);
 

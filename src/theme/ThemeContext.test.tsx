@@ -33,7 +33,8 @@ describe('ThemeContext / useTheme', () => {
   it('works when wrapped with a provider and toggles theme', async () => {
     function ProviderWrapper({ children }: { children: ReactNode }) {
       const [theme, setTheme] = useState('light');
-      const toggleTheme = () => setTheme((theme) => ((theme === 'light') ? 'dark' : 'light'));
+      const toggleTheme = () =>
+        setTheme((theme) => (theme === 'light' ? 'dark' : 'light'));
 
       return (
         <ThemeContext.Provider value={{ theme, toggleTheme }}>

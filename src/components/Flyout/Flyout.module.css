@@ -1,4 +1,4 @@
-.container{
+.container {
   display: flex;
   justify-content: center;
   align-items: end;
@@ -11,7 +11,7 @@
   height: 100vh;
 }
 
-.tooltip{
+.tooltip {
   width: 450px;
   height: 40px;
   background-color: rgb(82, 119, 119);
@@ -27,6 +27,6 @@
   margin-bottom: 10px;
 }
 
-.tooltip label{
+.tooltip label {
   color: white;
 }

@@ -14,7 +14,7 @@ const ErrorButton = () => {
   if (errorState.break) {
     throw new Error('Test error triggered!');
   }
-  
+
   return (
     <>
       <section className={styles.errorButtonContainer}>

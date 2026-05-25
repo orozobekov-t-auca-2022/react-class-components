@@ -1,8 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { IState } from "./types";
+import { createSlice } from '@reduxjs/toolkit';
+import type { IState } from './types';
 
 const initialState: IState = {
-  selectedPokemons: []
+  selectedPokemons: [],
 };
 
 const pokemonsSlice = createSlice({
@@ -10,20 +10,19 @@ const pokemonsSlice = createSlice({
   initialState,
   reducers: {
     select: (state, payload) => {
-      state.selectedPokemons = [
-        ...state.selectedPokemons,
-        payload.payload
-      ]
+      state.selectedPokemons = [...state.selectedPokemons, payload.payload];
     },
     unselect: (state, payload) => {
-      state.selectedPokemons = state.selectedPokemons.filter((pokemon) => pokemon.id !== payload.payload)
+      state.selectedPokemons = state.selectedPokemons.filter(
+        (pokemon) => pokemon.id !== payload.payload
+      );
     },
     unselectAll: (state) => {
-      state.selectedPokemons = []
-    }
-  }
+      state.selectedPokemons = [];
+    },
+  },
 });
 
-export const {select, unselect, unselectAll} = pokemonsSlice.actions;
+export const { select, unselect, unselectAll } = pokemonsSlice.actions;
 
 export default pokemonsSlice.reducer;

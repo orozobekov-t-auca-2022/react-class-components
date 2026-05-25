@@ -2,7 +2,6 @@ import styles from './CardList.module.css';
 import Card from '../Card/Card';
 import type { IPokemon, IPokeResponse } from '../../type';
 
-
 const CardList = (props: IPokeResponse) => {
   const { results } = props;
   return (

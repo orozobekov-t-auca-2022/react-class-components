@@ -42,7 +42,9 @@ const App = () => {
   const detailsId = searchParams.get('details');
   const page = Number(searchParams.get('page')) || 1;
 
-  const selectedPokemons = useSelector((state: RootState) => state.pokemons.selectedPokemons);
+  const selectedPokemons = useSelector(
+    (state: RootState) => state.pokemons.selectedPokemons
+  );
 
   useEffect(() => {
     const loadData = async () => {
@@ -72,7 +74,9 @@ const App = () => {
                   .includes(savedPrompt.trim().toLowerCase())
               )
             : resultsWithIds;
-          const totalCount = hasSearchTerm ? filteredResults.length : data.count;
+          const totalCount = hasSearchTerm
+            ? filteredResults.length
+            : data.count;
 
           setPagesArray(getPagesArray(getPageCount(totalCount, PAGE_LIMIT)));
 
@@ -124,7 +128,9 @@ const App = () => {
     const hasSearchTerm = normalizedSearchTerm.length > 0;
     const filtered = hasSearchTerm
       ? allPokemons.filter((pokemon) =>
-          pokemon.name.toLowerCase().includes(normalizedSearchTerm.toLowerCase())
+          pokemon.name
+            .toLowerCase()
+            .includes(normalizedSearchTerm.toLowerCase())
         )
       : allPokemons;
     const totalCount = hasSearchTerm ? filtered.length : pokemons.count;

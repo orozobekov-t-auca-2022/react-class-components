@@ -129,8 +129,12 @@ describe('App', () => {
     fireEvent.change(input, { target: { value: 'asd' } });
     fireEvent.click(searchButton);
 
-    expect(screen.queryByRole('button', { name: '68' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('navigation', { name: /pagination/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: '68' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('navigation', { name: /pagination/i })
+    ).not.toBeInTheDocument();
   });
 
   it('saves trimmed search term and filters the loaded results', async () => {

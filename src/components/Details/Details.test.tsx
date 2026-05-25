@@ -1,8 +1,4 @@
-import {
-  fireEvent,
-  render,
-  screen,
-} from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { act } from 'react';
 import { MemoryRouter } from 'react-router';
 import Details from './Details';
@@ -12,7 +8,8 @@ describe('Details component', () => {
   beforeEach(() => {
     vi.useFakeTimers();
 
-    globalThis.fetch = vi.fn()
+    globalThis.fetch = vi
+      .fn()
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({
@@ -58,16 +55,12 @@ describe('Details component', () => {
 
   it('renders pokemon details after loading', async () => {
     render(
-      <MemoryRouter
-        initialEntries={['/?page=1&details=25']}
-      >
+      <MemoryRouter initialEntries={['/?page=1&details=25']}>
         <Details />
       </MemoryRouter>
     );
 
-    expect(
-      screen.getByTestId('loader')
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('loader')).toBeInTheDocument();
 
     await act(async () => {
       await Promise.resolve();
@@ -82,17 +75,11 @@ describe('Details component', () => {
       })
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByText(/electric mouse pokemon/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/electric mouse pokemon/i)).toBeInTheDocument();
 
-    expect(
-      screen.getByText(/static/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/static/i)).toBeInTheDocument();
 
-    expect(
-      screen.getByText(/height: 4/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/height: 4/i)).toBeInTheDocument();
 
     expect(
       screen.getByRole('img', {
@@ -103,9 +90,7 @@ describe('Details component', () => {
 
   it('closes details panel after click', async () => {
     render(
-      <MemoryRouter
-        initialEntries={['/?page=1&details=25']}
-      >
+      <MemoryRouter initialEntries={['/?page=1&details=25']}>
         <Details />
       </MemoryRouter>
     );
@@ -128,8 +113,6 @@ describe('Details component', () => {
       })
     );
 
-    expect(window.location.search).not.toContain(
-      'details'
-    );
+    expect(window.location.search).not.toContain('details');
   }, 10000);
 });

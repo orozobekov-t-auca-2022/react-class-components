@@ -1,4 +1,4 @@
-import type { IPokemon } from "../../../type";
+import type { IPokemon } from '../../../type';
 
 const escapeCsvValue = (value: string) => {
   return `"${value
@@ -13,7 +13,9 @@ const fetchDescription = async (pokemon: IPokemon) => {
   }
 
   try {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}`);
+    const res = await fetch(
+      `https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}`
+    );
     if (!res.ok) {
       return '';
     }
@@ -23,7 +25,7 @@ const fetchDescription = async (pokemon: IPokemon) => {
     const entry = data.flavor_text_entries.find(
       (t: { language: { name: string } }) => t.language.name === 'en'
     );
-    
+
     return entry?.flavor_text ?? '';
   } catch {
     return '';
@@ -48,7 +50,9 @@ export const createPokemonCsv = async (
 
   // prepend BOM for Excel compatibility on Windows
   const bom = '\uFEFF';
-  const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob([bom + csvContent], {
+    type: 'text/csv;charset=utf-8;',
+  });
   const url = URL.createObjectURL(blob);
 
   const link = document.createElement('a');

@@ -19,8 +19,6 @@ describe('NotFound page', () => {
       })
     );
 
-    expect(
-      screen.getByText(/home page/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/home page/i)).toBeInTheDocument();
   });
 });

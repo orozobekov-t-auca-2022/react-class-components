@@ -1,16 +1,15 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import pokemonsReducer from './pokemons/pokemonsSlice';
 
-
 const rootReducer = combineReducers({
-  pokemons: pokemonsReducer
-})
+  pokemons: pokemonsReducer,
+});
 
 export const setupStore = () => {
   return configureStore({
-    reducer: rootReducer
-  })
-}
+    reducer: rootReducer,
+  });
+};
 
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppStore = ReturnType<typeof setupStore>;

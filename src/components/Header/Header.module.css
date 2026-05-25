@@ -9,12 +9,12 @@
   font-size: 26px;
 }
 
-.header nav{
+.header nav {
   display: flex;
   gap: 20px;
 }
 
-.themeButton{
+.themeButton {
   background: none;
   border: none;
 }

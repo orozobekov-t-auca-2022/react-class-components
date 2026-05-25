@@ -29,8 +29,8 @@
   height: 200px;
 }
 
-h3{
-  color: var(--text)
+h3 {
+  color: var(--text);
 }
 
 .abilitiesBlock {
