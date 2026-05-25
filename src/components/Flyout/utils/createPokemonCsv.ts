@@ -48,7 +48,6 @@ export const createPokemonCsv = async (
     .map((row) => row.map((v) => escapeCsvValue(String(v))).join(','))
     .join('\r\n');
 
-  // prepend BOM for Excel compatibility on Windows
   const bom = '\uFEFF';
   const blob = new Blob([bom + csvContent], {
     type: 'text/csv;charset=utf-8;',

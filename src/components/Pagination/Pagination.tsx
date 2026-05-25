@@ -49,7 +49,7 @@ const Pagination = ({ pagesArray, onChange }: IPagination) => {
           })}
         <li>
           <Button
-            disabled={current === visiblePages.length ? true : false}
+            disabled={current === pagesArray.length ? true : false}
             onClick={() =>
               onChange(
                 currentPage < pagesArray.length
