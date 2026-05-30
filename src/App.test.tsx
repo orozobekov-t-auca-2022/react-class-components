@@ -2,8 +2,10 @@ import { render, screen, fireEvent } from './test-utils/render';
 import { vi, beforeEach, describe, it, expect } from 'vitest';
 import App from './App';
 import { act } from 'react';
+import { http, HttpResponse } from 'msw';
+import { server } from './mocks/server';
 
-vi.mock('./components/CardList', () => ({
+vi.mock('./components/CardList/CardList', () => ({
   default: ({ results }: { results: { name: string; url: string }[] }) => (
     <section data-testid="card-list-mock">
       <ul>
@@ -21,18 +23,28 @@ const pokemons = [
   { name: 'squirtle', url: 'https://pokeapi.co/api/v2/pokemon/7/' },
 ];
 
-const createResponse = (body: unknown, ok: boolean = true): Response =>
-  ({
-    ok,
-    json: async () => body,
-  }) as Response;
-
 const loadPokemonList = async () => {
   await act(async () => {
     await Promise.resolve();
     await vi.advanceTimersByTimeAsync(3000);
     await Promise.resolve();
   });
+};
+
+const mockPokemonList = (count = pokemons.length, results = pokemons) => {
+  server.use(
+    http.get('https://pokeapi.co/api/v2/pokemon', () =>
+      HttpResponse.json({ count, results })
+    )
+  );
+};
+
+const mockPokemonListError = () => {
+  server.use(
+    http.get('https://pokeapi.co/api/v2/pokemon', () =>
+      HttpResponse.json({ message: 'Internal Server Error' }, { status: 500 })
+    )
+  );
 };
 
 describe('App', () => {
@@ -47,17 +59,11 @@ describe('App', () => {
   });
 
   it('shows loader on initial render and renders the fetched results', async () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
 
     expect(screen.getByTestId('loader')).toBeInTheDocument();
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     await loadPokemonList();
 
@@ -70,17 +76,11 @@ describe('App', () => {
   it('restores the saved search term from localStorage and filters the initial list', async () => {
     localStorage.setItem('searchQuery', 'charizard');
 
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
 
     expect(screen.getByRole('textbox')).toHaveValue('charizard');
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     await loadPokemonList();
 
@@ -89,12 +89,7 @@ describe('App', () => {
   });
 
   it('keeps the search input field empty when localStorage has no saved term', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
     expect(localStorage.getItem('searchQuery')).toBeNull();
@@ -108,16 +103,9 @@ describe('App', () => {
   });
 
   it('hides pagination when a search returns no results', async () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: 1360,
-        results: pokemons,
-      })
-    );
+    mockPokemonList(1360);
 
     render(<App />);
-
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     await loadPokemonList();
 
@@ -138,16 +126,9 @@ describe('App', () => {
   });
 
   it('saves trimmed search term and filters the loaded results', async () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
-
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     await loadPokemonList();
 
@@ -167,12 +148,7 @@ describe('App', () => {
   it('overwrites an existing localStorage value after a new search', async () => {
     localStorage.setItem('searchQuery', 'char');
 
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
 
@@ -191,15 +167,11 @@ describe('App', () => {
   });
 
   it('shows an error when the initial request fails', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({ message: 'Internal Server Error' }, false)
-    );
+    mockPokemonListError();
 
-    await act(async () => {
-      render(<App />);
-      await Promise.resolve();
-      await Promise.resolve();
-    });
+    render(<App />);
+
+    await loadPokemonList();
 
     expect(
       screen.getByText(/it seems that something went wrong/i)
@@ -212,12 +184,7 @@ describe('App', () => {
       .mockImplementation(() => {});
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
 

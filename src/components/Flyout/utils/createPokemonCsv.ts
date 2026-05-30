@@ -7,31 +7,6 @@ const escapeCsvValue = (value: string) => {
     .replace(/\n/g, ' ')}"`;
 };
 
-const fetchDescription = async (pokemon: IPokemon) => {
-  if (pokemon.description) {
-    return pokemon.description;
-  }
-
-  try {
-    const res = await fetch(
-      `https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}`
-    );
-    if (!res.ok) {
-      return '';
-    }
-
-    const data = await res.json();
-
-    const entry = data.flavor_text_entries.find(
-      (t: { language: { name: string } }) => t.language.name === 'en'
-    );
-
-    return entry?.flavor_text ?? '';
-  } catch {
-    return '';
-  }
-};
-
 export const createPokemonCsv = async (
   selectedPokemons: IPokemon[],
   selectedAmount: number
@@ -40,8 +15,7 @@ export const createPokemonCsv = async (
   rows.push(['id', 'name', 'description', 'api_url']);
 
   for (const p of selectedPokemons) {
-    const description = await fetchDescription(p);
-    rows.push([String(p.id), p.name, description ?? '', p.url]);
+    rows.push([String(p.id), p.name, p.description ?? '', p.url]);
   }
 
   const csvContent = rows

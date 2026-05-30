@@ -2,17 +2,42 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { act } from 'react';
 import { MemoryRouter } from 'react-router';
 import Details from './Details';
-import { it, vi, type Mock } from 'vitest';
+import { it, vi } from 'vitest';
+import { http, HttpResponse } from 'msw';
+import { server } from '../../mocks/server';
+import { Provider } from 'react-redux';
+import { ThemeProvider } from '../../theme';
+import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
+import { setupStore } from '../../store/store';
+
+const renderDetails = (ui: React.ReactElement) => {
+  const store = setupStore();
+
+  return render(
+    <ThemeProvider>
+      <Provider store={store}>
+        <ErrorBoundary>
+          {ui}
+        </ErrorBoundary>
+      </Provider>
+    </ThemeProvider>
+  );
+};
 
 describe('Details component', () => {
   beforeEach(() => {
     vi.useFakeTimers();
+  });
 
-    globalThis.fetch = vi
-      .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
+
+  it('renders pokemon details after loading', async () => {
+    server.use(
+      http.get('https://pokeapi.co/api/v2/pokemon/25', () =>
+        HttpResponse.json({
           name: 'pikachu',
           sprites: {
             front_default: 'pikachu.png',
@@ -31,11 +56,10 @@ describe('Details component', () => {
               name: 'pikachu',
             },
           ],
-        }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
+        })
+      ),
+      http.get('https://pokeapi.co/api/v2/pokemon-species/25', () =>
+        HttpResponse.json({
           flavor_text_entries: [
             {
               language: {
@@ -44,17 +68,11 @@ describe('Details component', () => {
               flavor_text: 'Electric mouse pokemon',
             },
           ],
-        }),
-      }) as Mock;
-  });
+        })
+      )
+    );
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.useRealTimers();
-  });
-
-  it('renders pokemon details after loading', async () => {
-    render(
+    renderDetails(
       <MemoryRouter initialEntries={['/?page=1&details=25']}>
         <Details />
       </MemoryRouter>
@@ -89,7 +107,44 @@ describe('Details component', () => {
   }, 10000);
 
   it('closes details panel after click', async () => {
-    render(
+    server.use(
+      http.get('https://pokeapi.co/api/v2/pokemon/25', () =>
+        HttpResponse.json({
+          name: 'pikachu',
+          sprites: {
+            front_default: 'pikachu.png',
+          },
+          abilities: [
+            {
+              ability: {
+                name: 'static',
+              },
+            },
+          ],
+          id: 25,
+          height: 4,
+          forms: [
+            {
+              name: 'pikachu',
+            },
+          ],
+        })
+      ),
+      http.get('https://pokeapi.co/api/v2/pokemon-species/25', () =>
+        HttpResponse.json({
+          flavor_text_entries: [
+            {
+              language: {
+                name: 'en',
+              },
+              flavor_text: 'Electric mouse pokemon',
+            },
+          ],
+        })
+      )
+    );
+
+    renderDetails(
       <MemoryRouter initialEntries={['/?page=1&details=25']}>
         <Details />
       </MemoryRouter>
