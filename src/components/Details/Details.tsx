@@ -19,10 +19,13 @@ const Details = () => {
   const shouldFetch = detailsId !== null && !Number.isNaN(actualDetailsId);
   const pokemonId = shouldFetch ? actualDetailsId : 1;
 
-  const { data: detailsData, isLoading: isPokemonLoading } =
-    useGetPokemonByIdQuery(pokemonId, {
-      skip: !shouldFetch,
-    });
+  const {
+    data: detailsData,
+    isLoading: isPokemonLoading,
+    isError: isPokemonError,
+  } = useGetPokemonByIdQuery(pokemonId, {
+    skip: !shouldFetch,
+  });
 
   const {
     data: speciesData,
@@ -34,7 +37,7 @@ const Details = () => {
     });
 
   const isLoading = isPokemonLoading || isSpeciesLoading;
-  const isError = isSpeciesError;
+  const isError = isPokemonError || isSpeciesError;
   const detailsInfo = {
     name: detailsData?.name ?? '',
     description: speciesData

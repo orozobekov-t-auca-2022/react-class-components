@@ -11,8 +11,7 @@ const RefreshButton = () => {
   const detailsId = searchParams.get('details');
   const pokemonId = Number(detailsId);
   const hasValidDetailsId = detailsId !== null && !Number.isNaN(pokemonId);
-  const useAppDispatch = useDispatch.withTypes<AppDispatch>();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
 

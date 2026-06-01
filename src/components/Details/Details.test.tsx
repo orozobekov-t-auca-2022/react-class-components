@@ -106,6 +106,42 @@ describe('Details component', () => {
     ).toHaveAttribute('src', 'pikachu.png');
   }, 10000);
 
+  it('shows an error message when pokemon details request fails', async () => {
+    server.use(
+      http.get('https://pokeapi.co/api/v2/pokemon/25', () =>
+        HttpResponse.json({ message: 'Internal Server Error' }, { status: 500 })
+      ),
+      http.get('https://pokeapi.co/api/v2/pokemon-species/25', () =>
+        HttpResponse.json({
+          flavor_text_entries: [
+            {
+              language: {
+                name: 'en',
+              },
+              flavor_text: 'Electric mouse pokemon',
+            },
+          ],
+        })
+      )
+    );
+
+    renderDetails(
+      <MemoryRouter initialEntries={['/?page=1&details=25']}>
+        <Details />
+      </MemoryRouter>
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+      await vi.advanceTimersByTimeAsync(3000);
+      await Promise.resolve();
+    });
+
+    expect(
+      screen.getByText(/failed to load pokemon details/i)
+    ).toBeInTheDocument();
+  }, 10000);
+
   it('closes details panel after click', async () => {
     server.use(
       http.get('https://pokeapi.co/api/v2/pokemon/25', () =>

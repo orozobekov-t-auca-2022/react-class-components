@@ -23,6 +23,12 @@ const pokemons = [
   { name: 'squirtle', url: 'https://pokeapi.co/api/v2/pokemon/7/' },
 ];
 
+const createPokemonResults = (items: { name: string; id: number }[]) =>
+  items.map((item) => ({
+    name: item.name,
+    url: `https://pokeapi.co/api/v2/pokemon/${item.id}/`,
+  }));
+
 const loadPokemonList = async () => {
   await act(async () => {
     await Promise.resolve();
@@ -176,6 +182,98 @@ describe('App', () => {
     expect(
       screen.getByText(/it seems that something went wrong/i)
     ).toBeInTheDocument();
+  });
+
+  it('reuses cached page data when returning to a previously loaded page', async () => {
+    const requestCounts = {
+      page1: 0,
+      page2: 0,
+    };
+
+    const page1Results = createPokemonResults([
+      { name: 'bulbasaur', id: 1 },
+      { name: 'ivysaur', id: 2 },
+    ]);
+
+    const page2Results = createPokemonResults([
+      { name: 'charmander', id: 4 },
+      { name: 'charmeleon', id: 5 },
+    ]);
+
+    server.use(
+      http.get('https://pokeapi.co/api/v2/pokemon', ({ request }) => {
+        const offset = Number(new URL(request.url).searchParams.get('offset'));
+
+        if (offset === 0) {
+          requestCounts.page1 += 1;
+          return HttpResponse.json({ count: 40, results: page1Results });
+        }
+
+        if (offset === 20) {
+          requestCounts.page2 += 1;
+          return HttpResponse.json({ count: 40, results: page2Results });
+        }
+
+        return HttpResponse.json({ count: 40, results: [] });
+      })
+    );
+
+    render(<App />);
+
+    await loadPokemonList();
+
+    expect(screen.getByText('bulbasaur')).toBeInTheDocument();
+    expect(screen.getByText('ivysaur')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '2' }));
+    await loadPokemonList();
+
+    expect(screen.getByText('charmander')).toBeInTheDocument();
+    expect(screen.getByText('charmeleon')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '1' }));
+    await loadPokemonList();
+
+    expect(screen.getByText('bulbasaur')).toBeInTheDocument();
+    expect(screen.getByText('ivysaur')).toBeInTheDocument();
+    expect(requestCounts.page1).toBe(1);
+    expect(requestCounts.page2).toBe(1);
+  });
+
+  it('refetches the current page when refresh is clicked', async () => {
+    const requestCounts = {
+      page1: 0,
+    };
+
+    const page1Results = createPokemonResults([
+      { name: 'bulbasaur', id: 1 },
+      { name: 'ivysaur', id: 2 },
+    ]);
+
+    server.use(
+      http.get('https://pokeapi.co/api/v2/pokemon', ({ request }) => {
+        const offset = Number(new URL(request.url).searchParams.get('offset'));
+
+        if (offset === 0) {
+          requestCounts.page1 += 1;
+          return HttpResponse.json({ count: 40, results: page1Results });
+        }
+
+        return HttpResponse.json({ count: 40, results: [] });
+      })
+    );
+
+    render(<App />);
+
+    await loadPokemonList();
+
+    expect(screen.getByText('bulbasaur')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /refresh/i }));
+    await loadPokemonList();
+
+    expect(screen.getByText('bulbasaur')).toBeInTheDocument();
+    expect(requestCounts.page1).toBe(2);
   });
 
   it('renders the error boundary fallback when the error button throws', async () => {

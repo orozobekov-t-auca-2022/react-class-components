@@ -14,8 +14,7 @@ const Flyout = () => {
     (state: RootState) => state.pokemons.selectedPokemons
   );
   const selectedAmount = selectedPokemons.length;
-  const useAppDispatch = useDispatch.withTypes<AppDispatch>();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [downloadError, setDownloadError] = useState('');
   const [isDownloading, setIsDownloading] = useState(false);
 
