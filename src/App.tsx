@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import type { RootState } from './store/store';
 import Flyout from './components/Flyout/Flyout';
 import { useGetPokemonListQuery } from './services/pokemon';
+import RefreshButton from './components/RefreshButton/RefreshButton';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
@@ -102,7 +103,10 @@ const App = () => {
               )}
             </>
           )}
-          <ErrorButton />
+          <div className={styles.actionButtons}>
+            <ErrorButton />
+            <RefreshButton />
+          </div>
         </main>
         {detailsId && (
           <aside className={styles.sidebar} aria-label="details panel">
