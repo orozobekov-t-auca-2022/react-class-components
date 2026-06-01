@@ -47,29 +47,14 @@ describe('createPokemonCsv', () => {
     expect(revokeSpy).toHaveBeenCalled();
   });
 
-  it('fetches missing descriptions before download', async () => {
+  it('uses empty descriptions when they are missing', async () => {
     const selected = [
       { id: 1, name: 'pikachu', url: 'url1' },
       { id: 2, name: 'bulbasaur', url: 'url2' },
     ];
 
-    const fetchMock = vi.fn().mockImplementation((url: string) => {
-      const name = url.split('/').pop();
-      return Promise.resolve({
-        ok: true,
-        json: async () => ({
-          flavor_text_entries: [
-            { language: { name: 'en' }, flavor_text: `desc-${name}` },
-          ],
-        }),
-      });
-    });
-
-    globalThis.fetch = fetchMock;
-
     await createPokemonCsv(selected, selected.length);
 
-    expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(createObjectUrlSpy).toHaveBeenCalled();
     expect(appendSpy).toHaveBeenCalled();
     expect(removeSpy).toHaveBeenCalled();

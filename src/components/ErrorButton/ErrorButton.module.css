@@ -1,15 +1,12 @@
-.errorButtonContainer {
-  width: 100%;
-  height: 100px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: end;
-}
-
 .errorButton {
   border-radius: 10px;
   background-color: rgb(192, 66, 66);
   color: white;
   display: flex;
   justify-content: center;
+}
+
+.errorButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgb(192 66 66 / 35%);
 }

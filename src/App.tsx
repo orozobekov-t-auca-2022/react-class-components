@@ -1,11 +1,11 @@
-import { useEffect, useState, type ChangeEvent, type SubmitEvent } from 'react';
+import { useState, type ChangeEvent, type SubmitEvent } from 'react';
 import styles from './App.module.css';
 import CardList from './components/CardList/CardList';
 import Search from './components/Search';
 import ErrorButton from './components/ErrorButton/ErrorButton';
 import ErrorList from './components/ErrorList/ErrorList';
 import Loader from './components/Loader/Loader';
-import type { IPokemon, IState } from './type';
+import type { IState } from './type';
 import { getPageCount, getPagesArray } from './utils/pages';
 import Pagination from './components/Pagination/Pagination';
 import { Outlet, useSearchParams } from 'react-router';
@@ -13,6 +13,8 @@ import useLocalStorage from './hooks/useLocalStorage';
 import { useSelector } from 'react-redux';
 import type { RootState } from './store/store';
 import Flyout from './components/Flyout/Flyout';
+import { useGetPokemonListQuery } from './services/pokemon';
+import RefreshButton from './components/RefreshButton/RefreshButton';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
@@ -25,90 +27,40 @@ const getPokemonIdFromUrl = (url: string) => {
 };
 
 const App = () => {
-  const [allPokemons, setAllPokemons] = useState<IPokemon[]>([]);
-  const [data, setData] = useState<IState>({
-    pokemons: {
-      count: 0,
-      results: [],
-    },
-    isLoading: true,
-    error: null,
-  });
-  const { isLoading, error, pokemons } = data;
-  const [pagesArray, setPagesArray] = useState<number[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [savedPrompt, , savePrompt] = useLocalStorage('searchQuery', '');
   const [searchPrompt, setSearchPrompt] = useState(savedPrompt);
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState(searchPrompt.trim())
   const detailsId = searchParams.get('details');
   const page = Number(searchParams.get('page')) || 1;
+  const currentPage = page ? page : 1;
+  const offset = (currentPage - 1) * PAGE_LIMIT;
+
+  const {data: pokemonPage, isLoading, error} = useGetPokemonListQuery({offset, limit: PAGE_LIMIT});
 
   const selectedPokemons = useSelector(
     (state: RootState) => state.pokemons.selectedPokemons
   );
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const currentPage = page ? page : 1;
-        const offset = (currentPage - 1) * PAGE_LIMIT;
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${PAGE_LIMIT}`
-        );
-        if (!response.ok) {
-          throw new Error('Network error');
-        }
+  const allPokemons = pokemonPage?.results.map((pokemon) => ({
+    ...pokemon,
+    id: getPokemonIdFromUrl(pokemon.url),
+  })) ?? [];
+  
+  const filteredPokemons = appliedSearchTerm
+  ? allPokemons.filter((pokemon) => 
+    pokemon.name.toLowerCase().includes(appliedSearchTerm.toLowerCase())
+  )
+  : allPokemons;
 
-        const data = await response.json();
-        const hasSearchTerm = savedPrompt.trim().length > 0;
-        const resultsWithIds = data.results.map((pokemon: IPokemon) => ({
-          ...pokemon,
-          id: getPokemonIdFromUrl(pokemon.url),
-        }));
+  const totalCount = appliedSearchTerm ? filteredPokemons.length : pokemonPage?.count ?? 0;
 
-        setTimeout(() => {
-          setAllPokemons(resultsWithIds);
-          const filteredResults = hasSearchTerm
-            ? resultsWithIds.filter((pokemon: { name: string }) =>
-                pokemon.name
-                  .toLowerCase()
-                  .includes(savedPrompt.trim().toLowerCase())
-              )
-            : resultsWithIds;
-          const totalCount = hasSearchTerm
-            ? filteredResults.length
-            : data.count;
+  const pokemons: IState['pokemons'] = {
+    count: totalCount,
+    results: filteredPokemons,
+  };
 
-          setPagesArray(getPagesArray(getPageCount(totalCount, PAGE_LIMIT)));
-
-          setData((prevData) => ({
-            ...prevData,
-            pokemons: {
-              results: filteredResults,
-              count: totalCount,
-            },
-            isLoading: false,
-          }));
-        }, 3000);
-      } catch (e) {
-        if (e instanceof Error) {
-          setData((prevData) => ({
-            ...prevData,
-            isLoading: false,
-            error: ERROR_MESSAGE,
-          }));
-        } else {
-          console.log(`An unexpected error has occured ${e}`);
-          setData((prevData) => ({
-            ...prevData,
-            error: ERROR_MESSAGE,
-            isLoading: false,
-          }));
-        }
-      }
-    };
-
-    loadData();
-  }, [page, savedPrompt]);
+  const pagesArray = getPagesArray(getPageCount(totalCount, PAGE_LIMIT));
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchPrompt(e.target.value);
@@ -120,30 +72,8 @@ const App = () => {
     const trimmedSearch = searchPrompt.trim();
     setSearchPrompt(trimmedSearch);
     savePrompt(trimmedSearch);
-    filterPokemons(trimmedSearch);
-  };
-
-  const filterPokemons = (searchTerm: string) => {
-    const normalizedSearchTerm = searchTerm.trim();
-    const hasSearchTerm = normalizedSearchTerm.length > 0;
-    const filtered = hasSearchTerm
-      ? allPokemons.filter((pokemon) =>
-          pokemon.name
-            .toLowerCase()
-            .includes(normalizedSearchTerm.toLowerCase())
-        )
-      : allPokemons;
-    const totalCount = hasSearchTerm ? filtered.length : pokemons.count;
-
-    setPagesArray(getPagesArray(getPageCount(totalCount, PAGE_LIMIT)));
-    setData((prevData) => ({
-      ...prevData,
-      pokemons: {
-        ...prevData.pokemons,
-        results: filtered,
-        count: totalCount,
-      },
-    }));
+    setAppliedSearchTerm(trimmedSearch);
+    setSearchParams({page: '1'});
   };
 
   return (
@@ -165,19 +95,18 @@ const App = () => {
               {pagesArray.length > 0 && (
                 <Pagination
                   pagesArray={pagesArray}
-                  currentPage={page ? page : 1}
+                  currentPage={currentPage}
                   onChange={(actualPage: number) => {
-                    setData((prevData) => ({
-                      ...prevData,
-                      isLoading: true,
-                    }));
                     setSearchParams({ page: `${actualPage}` });
                   }}
                 />
               )}
             </>
           )}
-          <ErrorButton />
+          <div className={styles.actionButtons}>
+            <ErrorButton />
+            <RefreshButton />
+          </div>
         </main>
         {detailsId && (
           <aside className={styles.sidebar} aria-label="details panel">

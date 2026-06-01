@@ -2,8 +2,10 @@ import { render, screen, fireEvent } from './test-utils/render';
 import { vi, beforeEach, describe, it, expect } from 'vitest';
 import App from './App';
 import { act } from 'react';
+import { http, HttpResponse } from 'msw';
+import { server } from './mocks/server';
 
-vi.mock('./components/CardList', () => ({
+vi.mock('./components/CardList/CardList', () => ({
   default: ({ results }: { results: { name: string; url: string }[] }) => (
     <section data-testid="card-list-mock">
       <ul>
@@ -21,11 +23,11 @@ const pokemons = [
   { name: 'squirtle', url: 'https://pokeapi.co/api/v2/pokemon/7/' },
 ];
 
-const createResponse = (body: unknown, ok: boolean = true): Response =>
-  ({
-    ok,
-    json: async () => body,
-  }) as Response;
+const createPokemonResults = (items: { name: string; id: number }[]) =>
+  items.map((item) => ({
+    name: item.name,
+    url: `https://pokeapi.co/api/v2/pokemon/${item.id}/`,
+  }));
 
 const loadPokemonList = async () => {
   await act(async () => {
@@ -33,6 +35,22 @@ const loadPokemonList = async () => {
     await vi.advanceTimersByTimeAsync(3000);
     await Promise.resolve();
   });
+};
+
+const mockPokemonList = (count = pokemons.length, results = pokemons) => {
+  server.use(
+    http.get('https://pokeapi.co/api/v2/pokemon', () =>
+      HttpResponse.json({ count, results })
+    )
+  );
+};
+
+const mockPokemonListError = () => {
+  server.use(
+    http.get('https://pokeapi.co/api/v2/pokemon', () =>
+      HttpResponse.json({ message: 'Internal Server Error' }, { status: 500 })
+    )
+  );
 };
 
 describe('App', () => {
@@ -47,17 +65,11 @@ describe('App', () => {
   });
 
   it('shows loader on initial render and renders the fetched results', async () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
 
     expect(screen.getByTestId('loader')).toBeInTheDocument();
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     await loadPokemonList();
 
@@ -70,17 +82,11 @@ describe('App', () => {
   it('restores the saved search term from localStorage and filters the initial list', async () => {
     localStorage.setItem('searchQuery', 'charizard');
 
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
 
     expect(screen.getByRole('textbox')).toHaveValue('charizard');
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     await loadPokemonList();
 
@@ -89,12 +95,7 @@ describe('App', () => {
   });
 
   it('keeps the search input field empty when localStorage has no saved term', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
     expect(localStorage.getItem('searchQuery')).toBeNull();
@@ -108,16 +109,9 @@ describe('App', () => {
   });
 
   it('hides pagination when a search returns no results', async () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: 1360,
-        results: pokemons,
-      })
-    );
+    mockPokemonList(1360);
 
     render(<App />);
-
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     await loadPokemonList();
 
@@ -138,16 +132,9 @@ describe('App', () => {
   });
 
   it('saves trimmed search term and filters the loaded results', async () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
-
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
 
     await loadPokemonList();
 
@@ -167,12 +154,7 @@ describe('App', () => {
   it('overwrites an existing localStorage value after a new search', async () => {
     localStorage.setItem('searchQuery', 'char');
 
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
 
@@ -191,19 +173,107 @@ describe('App', () => {
   });
 
   it('shows an error when the initial request fails', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({ message: 'Internal Server Error' }, false)
-    );
+    mockPokemonListError();
 
-    await act(async () => {
-      render(<App />);
-      await Promise.resolve();
-      await Promise.resolve();
-    });
+    render(<App />);
+
+    await loadPokemonList();
 
     expect(
       screen.getByText(/it seems that something went wrong/i)
     ).toBeInTheDocument();
+  });
+
+  it('reuses cached page data when returning to a previously loaded page', async () => {
+    const requestCounts = {
+      page1: 0,
+      page2: 0,
+    };
+
+    const page1Results = createPokemonResults([
+      { name: 'bulbasaur', id: 1 },
+      { name: 'ivysaur', id: 2 },
+    ]);
+
+    const page2Results = createPokemonResults([
+      { name: 'charmander', id: 4 },
+      { name: 'charmeleon', id: 5 },
+    ]);
+
+    server.use(
+      http.get('https://pokeapi.co/api/v2/pokemon', ({ request }) => {
+        const offset = Number(new URL(request.url).searchParams.get('offset'));
+
+        if (offset === 0) {
+          requestCounts.page1 += 1;
+          return HttpResponse.json({ count: 40, results: page1Results });
+        }
+
+        if (offset === 20) {
+          requestCounts.page2 += 1;
+          return HttpResponse.json({ count: 40, results: page2Results });
+        }
+
+        return HttpResponse.json({ count: 40, results: [] });
+      })
+    );
+
+    render(<App />);
+
+    await loadPokemonList();
+
+    expect(screen.getByText('bulbasaur')).toBeInTheDocument();
+    expect(screen.getByText('ivysaur')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '2' }));
+    await loadPokemonList();
+
+    expect(screen.getByText('charmander')).toBeInTheDocument();
+    expect(screen.getByText('charmeleon')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '1' }));
+    await loadPokemonList();
+
+    expect(screen.getByText('bulbasaur')).toBeInTheDocument();
+    expect(screen.getByText('ivysaur')).toBeInTheDocument();
+    expect(requestCounts.page1).toBe(1);
+    expect(requestCounts.page2).toBe(1);
+  });
+
+  it('refetches the current page when refresh is clicked', async () => {
+    const requestCounts = {
+      page1: 0,
+    };
+
+    const page1Results = createPokemonResults([
+      { name: 'bulbasaur', id: 1 },
+      { name: 'ivysaur', id: 2 },
+    ]);
+
+    server.use(
+      http.get('https://pokeapi.co/api/v2/pokemon', ({ request }) => {
+        const offset = Number(new URL(request.url).searchParams.get('offset'));
+
+        if (offset === 0) {
+          requestCounts.page1 += 1;
+          return HttpResponse.json({ count: 40, results: page1Results });
+        }
+
+        return HttpResponse.json({ count: 40, results: [] });
+      })
+    );
+
+    render(<App />);
+
+    await loadPokemonList();
+
+    expect(screen.getByText('bulbasaur')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /refresh/i }));
+    await loadPokemonList();
+
+    expect(screen.getByText('bulbasaur')).toBeInTheDocument();
+    expect(requestCounts.page1).toBe(2);
   });
 
   it('renders the error boundary fallback when the error button throws', async () => {
@@ -212,12 +282,7 @@ describe('App', () => {
       .mockImplementation(() => {});
     const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      createResponse({
-        count: pokemons.length,
-        results: pokemons,
-      })
-    );
+    mockPokemonList();
 
     render(<App />);
 

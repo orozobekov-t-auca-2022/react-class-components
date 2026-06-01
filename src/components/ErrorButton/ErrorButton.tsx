@@ -16,16 +16,12 @@ const ErrorButton = () => {
   }
 
   return (
-    <>
-      <section className={styles.errorButtonContainer}>
-        <Button
+    <Button
           className={styles.errorButton}
           onClick={() => setErrorState({ break: true })}
         >
-          Error
-        </Button>
-      </section>
-    </>
+          Trigger Error
+      </Button>
   );
 };
 

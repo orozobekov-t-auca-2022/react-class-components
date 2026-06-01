@@ -1,73 +1,54 @@
-import { useEffect, useState } from 'react';
 import styles from './Details.module.css';
-import type { IAbility, IDetailsState, IForm } from './types';
 import { useSearchParams } from 'react-router';
 import Loader from '../Loader/Loader';
+import ErrorList from '../ErrorList/ErrorList';
 import Button from '../common/Button/Button';
+import {
+  getEnglishFlavorText,
+  useGetPokemonByIdQuery,
+  useGetPokemonSpeciesByNameQuery,
+} from '../../services/pokemon';
+
+const ERROR_MESSAGE = 'Failed to load pokemon details. Please try again later.';
 
 const Details = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get('page');
   const detailsId = searchParams.get('details');
   const actualDetailsId = Number(detailsId);
-  const [detailsInfo, setDetailsInfo] = useState<IDetailsState>({
-    name: '',
-    description: '',
-    imgUrl: '',
-    abilities: [],
-    height: -1,
-    id: detailsId ? actualDetailsId : 1,
-    forms: [],
+  const shouldFetch = detailsId !== null && !Number.isNaN(actualDetailsId);
+  const pokemonId = shouldFetch ? actualDetailsId : 1;
+
+  const {
+    data: detailsData,
+    isLoading: isPokemonLoading,
+    isError: isPokemonError,
+  } = useGetPokemonByIdQuery(pokemonId, {
+    skip: !shouldFetch,
   });
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const loadDetailsInfo = async () => {
-      try {
-        const res = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${actualDetailsId}`
-        );
-        if (!res.ok) {
-          throw new Error('error');
-        }
+  const {
+    data: speciesData,
+    isLoading: isSpeciesLoading,
+    isError: isSpeciesError,
+  } =
+    useGetPokemonSpeciesByNameQuery(String(pokemonId), {
+      skip: !shouldFetch,
+    });
 
-        const data = await res.json();
-        setDetailsInfo((prevDetailsInfo) => ({
-          ...prevDetailsInfo,
-          name: data.name,
-          imgUrl: data.sprites.front_default,
-          abilities: data.abilities,
-          id: data.id,
-          height: data.height,
-          forms: data.forms,
-        }));
-
-        const speciesResponse = await fetch(
-          `https://pokeapi.co/api/v2/pokemon-species/${actualDetailsId}`
-        );
-        if (!speciesResponse.ok) {
-          throw new Error('error');
-        }
-
-        const speciesData = await speciesResponse.json();
-        const pokemonDescription = speciesData.flavor_text_entries.filter(
-          (text: { language: { name: string } }) => text.language.name === 'en'
-        )[0].flavor_text;
-
-        setDetailsInfo((prevDetailsInfo) => ({
-          ...prevDetailsInfo,
-          description: pokemonDescription,
-        }));
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setTimeout(() => setIsLoading(false), 3000);
-      }
-    };
-    if (!Number.isNaN(actualDetailsId)) {
-      loadDetailsInfo();
-    }
-  }, [actualDetailsId]);
+  const isLoading = isPokemonLoading || isSpeciesLoading;
+  const isError = isPokemonError || isSpeciesError;
+  const detailsInfo = {
+    name: detailsData?.name ?? '',
+    description: speciesData
+      ? getEnglishFlavorText(speciesData.flavor_text_entries)
+      : '',
+    imgUrl: detailsData?.sprites?.front_default ?? '',
+    abilities: detailsData?.abilities ?? [],
+    height: detailsData?.height ?? -1,
+    id: detailsData?.id ?? pokemonId,
+    forms: detailsData?.forms ?? [],
+  };
 
   const handleClose = () => {
     setSearchParams({ page: `${page ?? 1}` });
@@ -75,7 +56,9 @@ const Details = () => {
 
   return (
     <section className={styles.detailsPanel}>
-      {!isLoading ? (
+      {isError ? (
+        <ErrorList message={ERROR_MESSAGE} />
+      ) : !isLoading ? (
         <>
           <h2 className={styles.title}>{detailsInfo.name}</h2>
           <img
@@ -88,7 +71,7 @@ const Details = () => {
             <div className={styles.abilitiesBlock}>
               <h3 className={styles.sectionTitle}>Abilities</h3>
               <ul className={styles.list}>
-                {detailsInfo.abilities.map((ability: IAbility) => (
+                {detailsInfo.abilities.map((ability) => (
                   <li key={`${detailsInfo.id}${ability.ability.name}`}>
                     {ability.ability.name}
                   </li>
@@ -99,7 +82,7 @@ const Details = () => {
             <div className={styles.formsBlock}>
               <h3 className={styles.sectionTitle}>Forms</h3>
               <ul className={styles.list}>
-                {detailsInfo.forms.map((form: IForm) => (
+                {detailsInfo.forms.map((form) => (
                   <li key={`${detailsInfo.id}${form.name}`}>{form.name}</li>
                 ))}
               </ul>

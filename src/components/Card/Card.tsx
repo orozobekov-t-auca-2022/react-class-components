@@ -1,15 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styles from './Card.module.css';
 import { Link, useSearchParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { select, unselect } from '../../store/pokemons/pokemonsSlice';
 import type { RootState } from '../../store/store';
 import type { IPokemon } from '../../type';
+import {
+  getEnglishFlavorText,
+  useGetPokemonByUrlQuery,
+  useGetPokemonSpeciesByNameQuery,
+} from '../../services/pokemon';
 
 const Card = (pokemon: IPokemon) => {
   const { id, name, url } = pokemon;
-  const [description, setDescription] = useState<string>('');
-  const [image, setImage] = useState<string>('');
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page');
   const currentPage = page ? Number(page) : 1;
@@ -17,42 +20,29 @@ const Card = (pokemon: IPokemon) => {
   const selectedPokemons = useSelector(
     (state: RootState) => state.pokemons.selectedPokemons
   );
+  const { data: pokemonData, error: pokemonError } = useGetPokemonByUrlQuery(
+    url
+  );
+  const { data: speciesData, error: speciesError } =
+    useGetPokemonSpeciesByNameQuery(name);
   const isCurrentSelected = selectedPokemons.some(
     (selectedPokemon) => selectedPokemon.id === id
   );
 
   useEffect(() => {
-    const loadData = async () => {
-      const endpoint = url;
-      try {
-        const response = await fetch(endpoint);
-        if (!response.ok) {
-          throw new Error('Something wrong with response');
-        }
-        const data = await response.json();
-        setImage(data.sprites.front_default);
-      } catch (e) {
-        console.log(e);
-      }
+    if (pokemonError) {
+      console.error(pokemonError);
+    }
 
-      try {
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon-species/${name}`
-        );
-        if (!response.ok) {
-          throw new Error('Something went wrong');
-        }
-        const data = await response.json();
-        const pokemonDescription = data.flavor_text_entries.filter(
-          (text: { language: { name: string } }) => text.language.name === 'en'
-        )[0].flavor_text;
-        setDescription(pokemonDescription);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    loadData();
-  }, [name, url]);
+    if (speciesError) {
+      console.error(speciesError);
+    }
+  }, [pokemonError, speciesError]);
+
+  const image = pokemonData?.sprites?.front_default ?? '';
+  const description = speciesData
+    ? getEnglishFlavorText(speciesData.flavor_text_entries)
+    : '';
 
   return (
     <Link
