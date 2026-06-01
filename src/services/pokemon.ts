@@ -14,6 +14,7 @@ export const pokemonApi = createApi({
   reducerPath: 'pokemonApi',
   baseQuery: fetchBaseQuery({baseUrl: 'https://pokeapi.co/api/v2/'}),
   tagTypes: ['Pokemon', 'PokemonSpecies'],
+  keepUnusedDataFor: import.meta.env.VITE_RTK_QUERY_TTL_SECONDS,
   endpoints: (builder) => ({
     getPokemonList: builder.query<IPokemonListResponse, { offset: number, limit: number}>({
       query: ({offset, limit}) => `pokemon?offset=${offset}&limit=${limit}`,

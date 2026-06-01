@@ -1,12 +1,15 @@
 import styles from './Details.module.css';
 import { useSearchParams } from 'react-router';
 import Loader from '../Loader/Loader';
+import ErrorList from '../ErrorList/ErrorList';
 import Button from '../common/Button/Button';
 import {
   getEnglishFlavorText,
   useGetPokemonByIdQuery,
   useGetPokemonSpeciesByNameQuery,
 } from '../../services/pokemon';
+
+const ERROR_MESSAGE = 'Failed to load pokemon details. Please try again later.';
 
 const Details = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,12 +24,17 @@ const Details = () => {
       skip: !shouldFetch,
     });
 
-  const { data: speciesData, isLoading: isSpeciesLoading } =
+  const {
+    data: speciesData,
+    isLoading: isSpeciesLoading,
+    isError: isSpeciesError,
+  } =
     useGetPokemonSpeciesByNameQuery(String(pokemonId), {
       skip: !shouldFetch,
     });
 
   const isLoading = isPokemonLoading || isSpeciesLoading;
+  const isError = isSpeciesError;
   const detailsInfo = {
     name: detailsData?.name ?? '',
     description: speciesData
@@ -45,7 +53,9 @@ const Details = () => {
 
   return (
     <section className={styles.detailsPanel}>
-      {!isLoading ? (
+      {isError ? (
+        <ErrorList message={ERROR_MESSAGE} />
+      ) : !isLoading ? (
         <>
           <h2 className={styles.title}>{detailsInfo.name}</h2>
           <img
