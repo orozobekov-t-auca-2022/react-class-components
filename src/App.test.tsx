@@ -107,6 +107,36 @@ describe('App', () => {
     expect(screen.getByText('squirtle')).toBeInTheDocument();
   });
 
+  it('hides pagination when a search returns no results', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      createResponse({
+        count: 1360,
+        results: pokemons,
+      })
+    );
+
+    render(<App />);
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+    await loadPokemonList();
+
+    expect(screen.getByRole('button', { name: '68' })).toBeInTheDocument();
+
+    const input = screen.getByRole('textbox');
+    const searchButton = screen.getByRole('button', { name: /search/i });
+
+    fireEvent.change(input, { target: { value: 'asd' } });
+    fireEvent.click(searchButton);
+
+    expect(
+      screen.queryByRole('button', { name: '68' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('navigation', { name: /pagination/i })
+    ).not.toBeInTheDocument();
+  });
+
   it('saves trimmed search term and filters the loaded results', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       createResponse({

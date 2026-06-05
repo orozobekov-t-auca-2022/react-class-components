@@ -18,7 +18,13 @@ const About = () => {
         </ul>
       </div>
       <div className={styles.reactCourseLink}>
-        <a href="https://rs.school/courses/reactjs">Link to React Course</a>
+        <a
+          href="https://rs.school/courses/reactjs"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Link to React Course
+        </a>
       </div>
     </section>
   );

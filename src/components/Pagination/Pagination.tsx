@@ -2,21 +2,12 @@ import { useSearchParams } from 'react-router';
 import styles from './Pagination.module.css';
 import type { IPagination } from './types';
 import { Fragment } from 'react/jsx-runtime';
+import Button from '../common/Button/Button';
+import getVisiblePages from './utils/getVisiblePages';
 
 const Pagination = ({ pagesArray, onChange }: IPagination) => {
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page');
-  const getVisiblePages = (totalPages: number[], currentPage: number) => {
-    const delta = 2;
-
-    return totalPages.filter((page) => {
-      return (
-        page === 1 ||
-        page === totalPages.length ||
-        (page >= currentPage - delta && page <= currentPage + delta)
-      );
-    });
-  };
 
   const current = Number(page ? page : 1);
 
@@ -28,11 +19,12 @@ const Pagination = ({ pagesArray, onChange }: IPagination) => {
     <nav aria-label="pagination" className={styles.paginationWrapper}>
       <ul className={styles.pagination}>
         <li>
-          <button
+          <Button
+            disabled={current === 1 ? true : false}
             onClick={() => onChange(currentPage > 1 ? currentPage - 1 : 1)}
           >
             &laquo;
-          </button>
+          </Button>
         </li>
         {visiblePages.length > 0 &&
           visiblePages.map((page, index) => {
@@ -44,19 +36,20 @@ const Pagination = ({ pagesArray, onChange }: IPagination) => {
                     <span>...</span>
                   </li>
                 )}
-                <button
+                <Button
                   className={
                     page === currentPage ? styles.page__current : undefined
                   }
                   onClick={() => onChange(page)}
                 >
                   {page}
-                </button>
+                </Button>
               </Fragment>
             );
           })}
         <li>
-          <button
+          <Button
+            disabled={current === pagesArray.length ? true : false}
             onClick={() =>
               onChange(
                 currentPage < pagesArray.length
@@ -66,7 +59,7 @@ const Pagination = ({ pagesArray, onChange }: IPagination) => {
             }
           >
             &raquo;
-          </button>
+          </Button>
         </li>
       </ul>
     </nav>

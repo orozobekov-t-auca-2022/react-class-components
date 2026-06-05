@@ -1,6 +1,6 @@
 import { render, screen } from '../../test-utils/render';
 import { describe, it } from 'vitest';
-import ErrorList from '.';
+import ErrorList from './ErrorList';
 
 describe('ErrorList Component', () => {
   it('renders the provided message', () => {

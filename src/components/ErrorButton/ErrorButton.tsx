@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './ErrorButton.module.css';
+import Button from '../common/Button/Button';
 
 interface IErrorButtonState {
   break: boolean;
@@ -13,15 +14,16 @@ const ErrorButton = () => {
   if (errorState.break) {
     throw new Error('Test error triggered!');
   }
+
   return (
     <>
       <section className={styles.errorButtonContainer}>
-        <button
+        <Button
           className={styles.errorButton}
           onClick={() => setErrorState({ break: true })}
         >
           Error
-        </button>
+        </Button>
       </section>
     </>
   );

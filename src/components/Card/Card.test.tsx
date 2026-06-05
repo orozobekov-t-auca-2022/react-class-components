@@ -1,11 +1,12 @@
 import { render, screen, waitFor } from '../../test-utils/render';
 import { describe, it, vi } from 'vitest';
-import Card from '.';
+import Card from './Card';
 import { server } from '../../mocks/server';
 import { http, HttpResponse } from 'msw';
 
 describe('Card Component', () => {
   const pokemon = {
+    id: 4,
     name: 'charmander',
     url: 'https://pokeapi.co/api/v2/pokemon/4/',
   };

@@ -1,22 +1,16 @@
 import styles from './CardList.module.css';
-import Card from '../Card';
+import Card from '../Card/Card';
+import type { IPokemon, IPokeResponse } from '../../type';
 
-interface IPokemonsProps {
-  results: {
-    name: string;
-    url: string;
-  }[];
-}
-
-const CardList = (props: IPokemonsProps) => {
+const CardList = (props: IPokeResponse) => {
   const { results } = props;
   return (
     <>
       <section className="results">
         {results.length > 0 ? (
           <ul className={styles.list}>
-            {results.map((pokemon) => (
-              <Card key={pokemon.name} name={pokemon.name} url={pokemon.url} />
+            {results.map((pokemon: IPokemon) => (
+              <Card key={pokemon.id} {...pokemon} />
             ))}
           </ul>
         ) : (

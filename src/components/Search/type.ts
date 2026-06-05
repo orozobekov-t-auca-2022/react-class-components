@@ -1,7 +1,7 @@
-import { type SubmitEvent, type ChangeEvent } from 'react';
+import { type ChangeEvent, type FormEvent } from 'react';
 
 export interface ISearchProps {
   value: string;
-  onSubmit: (e: SubmitEvent<Element>) => void;
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
