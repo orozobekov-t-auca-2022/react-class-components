@@ -20,11 +20,7 @@
   text-decoration: none;
 }
 
-.card:hover {
-  width: 260px;
-  height: 310px;
-}
-
 .checkbox {
   color: var(--text);
+  accent-color: var(--accent);
 }

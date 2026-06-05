@@ -1,5 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { IState } from './types';
+import type { IPokemon } from '../../type';
 
 const initialState: IState = {
   selectedPokemons: [],
@@ -9,10 +10,10 @@ const pokemonsSlice = createSlice({
   name: 'pokemons',
   initialState,
   reducers: {
-    select: (state, payload) => {
+    select: (state, payload: PayloadAction<IPokemon>) => {
       state.selectedPokemons = [...state.selectedPokemons, payload.payload];
     },
-    unselect: (state, payload) => {
+    unselect: (state, payload: PayloadAction<number>) => {
       state.selectedPokemons = state.selectedPokemons.filter(
         (pokemon) => pokemon.id !== payload.payload
       );

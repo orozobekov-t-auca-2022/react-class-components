@@ -1,8 +1,9 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { ThemeContext } from './ThemeContext';
+import type { Theme } from './types';
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<string>(() => {
+  const [theme, setTheme] = useState<Theme>(() => {
     try {
       const savedTheme = localStorage.getItem('theme');
 

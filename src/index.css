@@ -17,9 +17,12 @@
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
+  --input-bg: #ffff;
+  --input-border: #d9d9d9;
+
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -46,6 +49,11 @@
     rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   --link: rgb(11, 28, 82);
   --nav: rgb(55, 185, 185);
+
+  --input-bg: #2b2b2b;
+  --input-border: #555;
+
+  color-scheme: dark;
 }
 
 html[data-theme='dark'] #social .button-icon {
