@@ -1,4 +1,5 @@
 import Button from '../common/Button/Button';
+import Input from '../common/Input/Input';
 import styles from './Search.module.css';
 import type { ISearchProps } from './type';
 
@@ -11,11 +12,9 @@ const Search = (props: ISearchProps) => {
           <label className={styles.label} htmlFor="search_input">
             Search pokemon
           </label>
-          <input
-            className={styles.input}
+          <Input
             value={value}
             onChange={onChange}
-            id="search_input"
           />
         </div>
         <Button className={styles.button} type="submit">

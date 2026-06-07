@@ -14,6 +14,8 @@ import styles from "./Main.module.css";
 import { getPageCount, getPagesArray } from "../../utils/pages";
 import type { IPokemon, IState } from "../../type";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
+import ModalButton from "../../components/ModalButton/ModalButton";
+import ModalForm from "../../components/ModalForm/ModalForm";
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
@@ -44,13 +46,14 @@ const Main = () => {
 
   const [allPokemons, setAllPokemons] = useState<IPokemon[]>([]);
   
-  
   const [savedPrompt, , savePrompt] = useLocalStorage('searchQuery', '');
   const [searchPrompt, setSearchPrompt] = useState(savedPrompt);
 
   const selectedPokemons = useSelector(
     (state: RootState) => state.pokemons.selectedPokemons
   );
+
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -187,6 +190,7 @@ const Main = () => {
           <div className={styles.actionButtons}>
             <ErrorButton />
             <RefreshButton />
+            <ModalButton setOpen={() => setOpenModal(true)} />
           </div>
         </main>
         {detailsId && (
@@ -196,6 +200,7 @@ const Main = () => {
         )}
       </div>
       {selectedPokemons.length > 0 && <Flyout />}
+      {openModal && <ModalForm open={openModal} onClose={() => setOpenModal(false)} />}
     </>
   );
 }
