@@ -43,7 +43,7 @@ const ModalForm = ({
     reset,
     watch,
     formState,
-  } = useForm<RHFFormData, unknown, RHFFormData>({
+  } = useForm<RHFFormData>({
     defaultValues: RHF_DEFAULTS,
     mode: 'onChange',
     reValidateMode: 'onChange',

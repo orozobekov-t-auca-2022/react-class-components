@@ -1,4 +1,4 @@
-import { z, ZodType } from 'zod';
+import { z } from 'zod';
 
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg'];
@@ -11,8 +11,8 @@ const baseSchema = z.object({
       message: 'First letter must be uppercase',
     }),
 
-  age: z.coerce
-    .number({ message: 'Age must be a number' })
+  age: z
+    .number()
     .min(0, 'Age must be a non-negative number')
     .int('Age must be a whole number'),
 
@@ -58,7 +58,7 @@ export const uncontrolledSchema = baseSchema
     path: ['confirmPassword'],
   });
 
-export const rhfSchema: ZodType<RHFFormData> = baseSchema
+export const rhfSchema = baseSchema
   .extend({
     image: z
       .any()
@@ -74,23 +74,14 @@ export const rhfSchema: ZodType<RHFFormData> = baseSchema
       )
       .refine(
         (files) =>
-          files instanceof FileList && files[0]?.size <= MAX_IMAGE_SIZE,
+          files instanceof FileList &&
+          files[0]?.size <= MAX_IMAGE_SIZE,
         'Image must be less than 2MB'
       ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords must match',
     path: ['confirmPassword'],
-  }) as ZodType<RHFFormData>;
+  });
 
-export interface RHFFormData {
-  name: string;
-  age: number;
-  email: string;
-  gender: string;
-  acceptedTerms: boolean;
-  password: string;
-  confirmPassword: string;
-  country: string;
-  image: FileList | undefined;
-}
+export type RHFFormData = z.infer<typeof rhfSchema>;

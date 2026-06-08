@@ -39,7 +39,9 @@ const RHFForm = ({
           id="rhf-age"
           type="number"
           placeholder="Age"
-          {...register('age')}
+          {...register('age', {
+            valueAsNumber: true,
+          })}
         />
         <p className={styles.error}>{formState.errors.age?.message}</p>
       </div>

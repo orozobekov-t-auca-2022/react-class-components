@@ -18,7 +18,7 @@ const Submissions = () => {
               key={user.id}
             >
               <img src={user.image ?? ''} alt="" />
-              <h2>User {index + 1}</h2>
+              <h2>User {submissions.length - index}</h2>
               <h3>{user.name}</h3>
               <strong>{user.email}</strong>
               <p>{user.age} y.o.</p>
