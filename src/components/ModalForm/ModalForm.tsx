@@ -9,19 +9,19 @@ import RHFForm from "../RHFForm/RHFForm";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../store/forms/formsSlice";
 
+const FORMDATA: FormState = {
+  id: 0,
+  name: '',
+  email: '',
+  gender: null,
+  age: null,
+  acceptedTerms: false,
+}
+
 const ModalForm = ({open, onClose}: {open: boolean, onClose: () => void}) => {
   const [formMode, setFormMode] = useState<FormMode>('uncontrolled');
 
-  const [formData, setFormData] = useState<FormState>({
-    id: 0,
-    name: '',
-    email: '',
-    gender: null,
-    age: null,
-    acceptedTerms: false,
-  });
-
-  const {register, handleSubmit: handleRHFSubmit, reset} = useForm<FormState>({defaultValues: formData});
+  const {register, handleSubmit: handleRHFSubmit, reset} = useForm<FormState>({defaultValues: FORMDATA});
 
   const dispatch = useDispatch();
 
@@ -35,7 +35,7 @@ const ModalForm = ({open, onClose}: {open: boolean, onClose: () => void}) => {
       id: Date.now(),
       name: data.get("name") as string,
       email: data.get("email") as string,
-      gender: data.get("gender") as 'male' | 'female',
+      gender: (data.get("gender") as FormState["gender"]) || null,
       age: Number(data.get("age")),
       acceptedTerms: data.get("acceptedTerms") !== null,
     } 
@@ -48,14 +48,14 @@ const ModalForm = ({open, onClose}: {open: boolean, onClose: () => void}) => {
   const handleModeChange = (mode: FormMode) => {
     setFormMode(mode);
 
-    if(formMode === 'rhf') {
-      reset(formData);
+    if(mode === 'rhf') {
+      reset();
     }
   }
 
   const handleRHFFormSubmit = (data: FormState) => {
-    dispatch(addUser(formData))
-    reset(data);
+    dispatch(addUser({ ...data, id: Date.now() }));
+    reset(FORMDATA);
   }
 
   const renderUncontrolledForm = () => <UncontrolledForm handleSubmit={handleSubmit} />
@@ -64,7 +64,7 @@ const ModalForm = ({open, onClose}: {open: boolean, onClose: () => void}) => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <div className={styles.formSwitcher} role="tablisht" aria-label="Form mode">
+      <div className={styles.formSwitcher} role="tablist" aria-label="Form mode">
         <Button
           type="button"
           className={formMode === "uncontrolled" ? styles.activeModeButton : ""}

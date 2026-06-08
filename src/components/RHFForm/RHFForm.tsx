@@ -18,7 +18,7 @@ const RHFForm = ({handleRHFFormSubmit, handleRHFSubmit, register}: RHFFormProps)
         
         <div className={styles.inputBlock}>
           <label htmlFor="rhf-email">Email:</label>
-          <Input id="rhf-email" type="email" placeholder="Email" />
+          <Input id="rhf-email" type="email" placeholder="Email" {...register("email")} />
         </div>
 
         <div className={styles.inputBlock}>

@@ -193,10 +193,8 @@ const Main = () => {
             <RefreshButton />
             <ModalButton setOpen={() => setOpenModal(true)} />
           </div>
-        </main>
-        <div>
           <Submissions />
-        </div>
+        </main>
         {detailsId && (
           <aside className={styles.sidebar} aria-label="details panel">
             <Outlet />
