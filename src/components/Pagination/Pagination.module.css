@@ -1,0 +1,24 @@
+nav {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.pagination li {
+  margin: 0 1px;
+  display: flex;
+}
+
+.page__current {
+  border: 2px solid violet;
+  font-weight: bold;
+  background: #2e4370;
+  font-weight: 700;
+  text-decoration: none;
+}

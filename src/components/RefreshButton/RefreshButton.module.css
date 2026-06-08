@@ -1,0 +1,21 @@
+.refreshButton {
+  background: linear-gradient(135deg, #2d6cdf, #4a8dff);
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.refreshButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgb(23 72 160 / 35%);
+}
+
+.refreshButton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.updated {
+  background: linear-gradient(135deg, #148f5a, #27b86f);
+  box-shadow: 0 0 0 4px rgb(39 184 111 / 25%);
+}

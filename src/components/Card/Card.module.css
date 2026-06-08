@@ -1,0 +1,26 @@
+.card {
+  width: 250px;
+  height: 300px;
+  border: 1px solid var(--accent-border);
+  border-radius: 10px;
+  padding: 10px;
+  transition: 0.3s ease;
+  text-decoration: none;
+  background-color: var(--accent-bg);
+}
+
+.card h2 {
+  color: var(--accent);
+  font-size: 26px;
+}
+
+.card p {
+  color: var(--text);
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.checkbox {
+  color: var(--text);
+  accent-color: var(--accent);
+}

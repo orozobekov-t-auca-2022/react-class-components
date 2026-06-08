@@ -1,0 +1,30 @@
+.history {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.card {
+  width: 250px;
+  min-height: 300px;
+  border-radius: 10px;
+  padding: 10px;
+  transition: 0.3s ease;
+  text-decoration: none;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card h2 {
+  border-bottom: 1px solid var(--accent-border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.latest {
+  border: 3px solid gold;
+}
