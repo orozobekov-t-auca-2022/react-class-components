@@ -10,18 +10,22 @@ describe('createPokemonCsv', () => {
   const originalCreateElement = document.createElement.bind(document);
 
   beforeEach(() => {
-    createObjectUrlSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock');
+    createObjectUrlSpy = vi
+      .spyOn(URL, 'createObjectURL')
+      .mockReturnValue('blob:mock');
     revokeSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
     appendSpy = vi.spyOn(document.body, 'appendChild');
     removeSpy = vi.spyOn(document.body, 'removeChild');
 
-    vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
-      const el = originalCreateElement(tagName) as HTMLAnchorElement;
-      if (tagName === 'a') {
-        el.click = () => {};
+    vi.spyOn(document, 'createElement').mockImplementation(
+      (tagName: string) => {
+        const el = originalCreateElement(tagName) as HTMLAnchorElement;
+        if (tagName === 'a') {
+          el.click = () => {};
+        }
+        return el;
       }
-      return el;
-    });
+    );
   });
 
   afterEach(() => {

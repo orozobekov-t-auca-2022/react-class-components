@@ -31,10 +31,9 @@ const Details = () => {
     data: speciesData,
     isLoading: isSpeciesLoading,
     isError: isSpeciesError,
-  } =
-    useGetPokemonSpeciesByNameQuery(String(pokemonId), {
-      skip: !shouldFetch,
-    });
+  } = useGetPokemonSpeciesByNameQuery(String(pokemonId), {
+    skip: !shouldFetch,
+  });
 
   const isLoading = isPokemonLoading || isSpeciesLoading;
   const isError = isPokemonError || isSpeciesError;

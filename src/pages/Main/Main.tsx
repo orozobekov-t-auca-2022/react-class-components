@@ -1,22 +1,22 @@
-import { Outlet, useSearchParams } from "react-router";
-import CardList from "../../components/CardList/CardList";
-import ErrorButton from "../../components/ErrorButton/ErrorButton";
-import ErrorList from "../../components/ErrorList/ErrorList";
-import Loader from "../../components/Loader/Loader";
-import Pagination from "../../components/Pagination/Pagination";
-import Search from "../../components/Search";
-import Flyout from "../../components/Flyout/Flyout";
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../store/store";
-import useLocalStorage from "../../hooks/useLocalStorage";
-import styles from "./Main.module.css";
-import { getPageCount, getPagesArray } from "../../utils/pages";
-import type { IPokemon, IState } from "../../type";
-import RefreshButton from "../../components/RefreshButton/RefreshButton";
-import ModalButton from "../../components/ModalButton/ModalButton";
-import ModalForm from "../../components/ModalForm/ModalForm";
-import Submissions from "../../components/Submissions/Submissions";
+import { Outlet, useSearchParams } from 'react-router';
+import CardList from '../../components/CardList/CardList';
+import ErrorButton from '../../components/ErrorButton/ErrorButton';
+import ErrorList from '../../components/ErrorList/ErrorList';
+import Loader from '../../components/Loader/Loader';
+import Pagination from '../../components/Pagination/Pagination';
+import Search from '../../components/Search';
+import Flyout from '../../components/Flyout/Flyout';
+import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../store/store';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import styles from './Main.module.css';
+import { getPageCount, getPagesArray } from '../../utils/pages';
+import type { IPokemon, IState } from '../../type';
+import RefreshButton from '../../components/RefreshButton/RefreshButton';
+import ModalButton from '../../components/ModalButton/ModalButton';
+import ModalForm from '../../components/ModalForm/ModalForm';
+import Submissions from '../../components/Submissions/Submissions';
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
@@ -46,7 +46,7 @@ const Main = () => {
   const page = Number(searchParams.get('page')) || 1;
 
   const [allPokemons, setAllPokemons] = useState<IPokemon[]>([]);
-  
+
   const [savedPrompt, , savePrompt] = useLocalStorage('searchQuery', '');
   const [searchPrompt, setSearchPrompt] = useState(savedPrompt);
 
@@ -156,7 +156,6 @@ const Main = () => {
     }));
   };
 
-
   return (
     <>
       <div className={detailsId ? styles.splitLayout : styles.singleLayout}>
@@ -202,9 +201,11 @@ const Main = () => {
         )}
       </div>
       {selectedPokemons.length > 0 && <Flyout />}
-      {openModal && <ModalForm open={openModal} onClose={() => setOpenModal(false)} />}
+      {openModal && (
+        <ModalForm open={openModal} onClose={() => setOpenModal(false)} />
+      )}
     </>
   );
-}
+};
 
 export default Main;

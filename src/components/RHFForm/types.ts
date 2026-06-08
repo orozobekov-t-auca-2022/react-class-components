@@ -1,8 +1,15 @@
-import type { UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
-import type { FormState } from "../ModalForm/types";
+import type {
+  UseFormHandleSubmit,
+  UseFormRegister,
+  UseFormWatch,
+  FormState as RHFFormState,
+} from 'react-hook-form';
+import type { RHFFormData } from '../ModalForm/schema';
 
-export interface RHFFormProps{
-  handleRHFFormSubmit: (data: FormState) => void;
-  handleRHFSubmit: UseFormHandleSubmit<FormState, FormState>;
-  register: UseFormRegister<FormState>;
+export interface RHFFormProps {
+  handleRHFFormSubmit: (data: RHFFormData) => void;
+  handleRHFSubmit: UseFormHandleSubmit<RHFFormData, RHFFormData>;
+  register: UseFormRegister<RHFFormData>;
+  watch: UseFormWatch<RHFFormData>;
+  formState: RHFFormState<RHFFormData>;
 }

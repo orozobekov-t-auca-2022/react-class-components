@@ -1,4 +1,4 @@
-.history{
+.history {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -6,9 +6,9 @@
   width: 100%;
 }
 
-.card{
+.card {
   width: 250px;
-  height: 300px;
+  min-height: 300px;
   border: 1px solid var(--accent-border);
   border-radius: 10px;
   padding: 10px;
@@ -26,4 +26,8 @@
   border-bottom: 1px solid var(--accent-border);
   padding-bottom: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.latest {
+  border: 3px solid gold;
 }

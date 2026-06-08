@@ -2,10 +2,12 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { pokemonApi } from '../services/pokemon';
 import pokemonsReducer from './pokemons/pokemonsSlice';
 import formsReducer from './forms/formsSlice';
+import countriesReducer from './countries/countriesSlice';
 
 const rootReducer = combineReducers({
   pokemons: pokemonsReducer,
   forms: formsReducer,
+  countries: countriesReducer,
   [pokemonApi.reducerPath]: pokemonApi.reducer,
 });
 

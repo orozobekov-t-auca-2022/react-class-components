@@ -17,11 +17,11 @@ const ErrorButton = () => {
 
   return (
     <Button
-          className={styles.errorButton}
-          onClick={() => setErrorState({ break: true })}
-        >
-          Trigger Error
-      </Button>
+      className={styles.errorButton}
+      onClick={() => setErrorState({ break: true })}
+    >
+      Trigger Error
+    </Button>
   );
 };
 

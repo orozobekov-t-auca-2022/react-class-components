@@ -16,9 +16,7 @@ const renderDetails = (ui: React.ReactElement) => {
   return render(
     <ThemeProvider>
       <Provider store={store}>
-        <ErrorBoundary>
-          {ui}
-        </ErrorBoundary>
+        <ErrorBoundary>{ui}</ErrorBoundary>
       </Provider>
     </ThemeProvider>
   );

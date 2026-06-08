@@ -11,13 +11,17 @@ describe('pokemonsSlice reducer', () => {
   });
 
   it('should handle unselect', () => {
-    const state = { selectedPokemons: [{ id: 1, name: 'pikachu', url: 'url1' }] };
+    const state = {
+      selectedPokemons: [{ id: 1, name: 'pikachu', url: 'url1' }],
+    };
     const next = reducer(state, unselect(1));
     expect(next.selectedPokemons).toHaveLength(0);
   });
 
   it('should handle unselectAll', () => {
-    const state = { selectedPokemons: [{ id: 1, name: 'pikachu', url: 'url1' }] };
+    const state = {
+      selectedPokemons: [{ id: 1, name: 'pikachu', url: 'url1' }],
+    };
     const next = reducer(state, unselectAll());
     expect(next.selectedPokemons).toHaveLength(0);
   });

@@ -12,10 +12,7 @@ const Search = (props: ISearchProps) => {
           <label className={styles.label} htmlFor="search_input">
             Search pokemon
           </label>
-          <Input
-            value={value}
-            onChange={onChange}
-          />
+          <Input value={value} onChange={onChange} />
         </div>
         <Button className={styles.button} type="submit">
           Search

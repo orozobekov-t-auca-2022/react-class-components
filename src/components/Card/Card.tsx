@@ -20,9 +20,8 @@ const Card = (pokemon: IPokemon) => {
   const selectedPokemons = useSelector(
     (state: RootState) => state.pokemons.selectedPokemons
   );
-  const { data: pokemonData, error: pokemonError } = useGetPokemonByUrlQuery(
-    url
-  );
+  const { data: pokemonData, error: pokemonError } =
+    useGetPokemonByUrlQuery(url);
   const { data: speciesData, error: speciesError } =
     useGetPokemonSpeciesByNameQuery(name);
   const isCurrentSelected = selectedPokemons.some(

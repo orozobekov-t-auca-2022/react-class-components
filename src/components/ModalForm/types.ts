@@ -1,10 +1,13 @@
-export interface FormState{
-  id: number;
+export interface FormState {
   name: string;
-  age: number | null;
-  gender: 'male' | 'female' | null;
+  age: number;
+  gender: string;
   email: string;
   acceptedTerms: boolean;
+  image: string | null;
+  password: string;
+  confirmPassword: string;
+  country: string;
 }
 
 export type FormMode = 'uncontrolled' | 'rhf';

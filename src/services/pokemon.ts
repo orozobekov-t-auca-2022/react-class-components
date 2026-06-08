@@ -1,5 +1,10 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { type IPokemonDetailsResponse, type IPokemonListResponse, type IPokemonSpeciesFlavorTextEntry, type IPokemonSpeciesResponse } from "./types";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+  type IPokemonDetailsResponse,
+  type IPokemonListResponse,
+  type IPokemonSpeciesFlavorTextEntry,
+  type IPokemonSpeciesResponse,
+} from './types';
 
 export const getEnglishFlavorText = (
   flavorTextEntries: IPokemonSpeciesFlavorTextEntry[]
@@ -12,20 +17,25 @@ export const getEnglishFlavorText = (
 
 export const pokemonApi = createApi({
   reducerPath: 'pokemonApi',
-  baseQuery: fetchBaseQuery({baseUrl: 'https://pokeapi.co/api/v2/'}),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://pokeapi.co/api/v2/' }),
   tagTypes: ['Pokemon', 'PokemonSpecies'],
   keepUnusedDataFor: import.meta.env.VITE_RTK_QUERY_TTL_SECONDS,
   endpoints: (builder) => ({
-    getPokemonList: builder.query<IPokemonListResponse, { offset: number, limit: number}>({
-      query: ({offset, limit}) => `pokemon?offset=${offset}&limit=${limit}`,
-      providesTags: (result) => 
-        result ? [
-          {type: 'Pokemon' as const, id: 'LIST'},
-          ...result.results.map((pokemon) => ({
-            type: 'Pokemon' as const, id: pokemon.url
-          })),
-        ] :
-        [{type: 'Pokemon' as const, id: 'LIST'}],
+    getPokemonList: builder.query<
+      IPokemonListResponse,
+      { offset: number; limit: number }
+    >({
+      query: ({ offset, limit }) => `pokemon?offset=${offset}&limit=${limit}`,
+      providesTags: (result) =>
+        result
+          ? [
+              { type: 'Pokemon' as const, id: 'LIST' },
+              ...result.results.map((pokemon) => ({
+                type: 'Pokemon' as const,
+                id: pokemon.url,
+              })),
+            ]
+          : [{ type: 'Pokemon' as const, id: 'LIST' }],
     }),
     getPokemonByUrl: builder.query<IPokemonDetailsResponse, string>({
       query: (pokemonUrl) => pokemonUrl,
@@ -45,12 +55,12 @@ export const pokemonApi = createApi({
         { type: 'Pokemon' as const, id: pokemonId },
       ],
     }),
-  })
+  }),
 });
 
 export const {
   useGetPokemonListQuery,
   useGetPokemonByUrlQuery,
   useGetPokemonSpeciesByNameQuery,
-  useGetPokemonByIdQuery
-} = pokemonApi
+  useGetPokemonByIdQuery,
+} = pokemonApi;

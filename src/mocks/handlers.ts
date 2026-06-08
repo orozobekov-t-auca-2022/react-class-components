@@ -30,18 +30,21 @@ export const handlers = [
     });
   }),
 
-  http.get(`${API_BASE_URL}/pokemon-species/:pokemonSpeciesId`, ({ params }) => {
-    const pokemonSpeciesId = String(params.pokemonSpeciesId);
+  http.get(
+    `${API_BASE_URL}/pokemon-species/:pokemonSpeciesId`,
+    ({ params }) => {
+      const pokemonSpeciesId = String(params.pokemonSpeciesId);
 
-    return HttpResponse.json({
-      flavor_text_entries: [
-        {
-          flavor_text: `${pokemonSpeciesId} description`,
-          language: { name: 'en' },
-        },
-      ],
-    });
-  }),
+      return HttpResponse.json({
+        flavor_text_entries: [
+          {
+            flavor_text: `${pokemonSpeciesId} description`,
+            language: { name: 'en' },
+          },
+        ],
+      });
+    }
+  ),
 
   http.get(`${API_BASE_URL}/error`, () => {
     return HttpResponse.json(
