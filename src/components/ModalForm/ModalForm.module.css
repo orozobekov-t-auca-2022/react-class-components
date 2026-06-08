@@ -1,0 +1,22 @@
+.inputBlock{
+  display: flex;
+  flex-direction: column;
+}
+
+.form{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formSwitcher{
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.activeModeButton{
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
