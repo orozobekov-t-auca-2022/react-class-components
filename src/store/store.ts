@@ -1,9 +1,11 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { pokemonApi } from '../services/pokemon';
 import pokemonsReducer from './pokemons/pokemonsSlice';
+import formsReducer from './forms/formsSlice';
 
 const rootReducer = combineReducers({
   pokemons: pokemonsReducer,
+  forms: formsReducer,
   [pokemonApi.reducerPath]: pokemonApi.reducer,
 });
 

@@ -16,6 +16,7 @@ import type { IPokemon, IState } from "../../type";
 import RefreshButton from "../../components/RefreshButton/RefreshButton";
 import ModalButton from "../../components/ModalButton/ModalButton";
 import ModalForm from "../../components/ModalForm/ModalForm";
+import Submissions from "../../components/Submissions/Submissions";
 
 const ERROR_MESSAGE =
   'It seems that something went wrong. We ask you to visit our site later';
@@ -193,6 +194,9 @@ const Main = () => {
             <ModalButton setOpen={() => setOpenModal(true)} />
           </div>
         </main>
+        <div>
+          <Submissions />
+        </div>
         {detailsId && (
           <aside className={styles.sidebar} aria-label="details panel">
             <Outlet />

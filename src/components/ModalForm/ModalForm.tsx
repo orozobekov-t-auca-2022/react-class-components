@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Modal from "../Modal/Modal";
 import { type FormMode, type FormState } from "./types";
 import Button from "../common/Button/Button";
@@ -6,6 +6,8 @@ import styles from "./ModalForm.module.css";
 import { useForm } from "react-hook-form";
 import UncontrolledForm from "../UncontrolledForm/UncontrolledForm";
 import RHFForm from "../RHFForm/RHFForm";
+import { useDispatch } from "react-redux";
+import { addUser } from "../../store/forms/formsSlice";
 
 const ModalForm = ({open, onClose}: {open: boolean, onClose: () => void}) => {
   const [formMode, setFormMode] = useState<FormMode>('uncontrolled');
@@ -21,25 +23,26 @@ const ModalForm = ({open, onClose}: {open: boolean, onClose: () => void}) => {
 
   const {register, handleSubmit: handleRHFSubmit, reset} = useForm<FormState>({defaultValues: formData});
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const {name, value} = e.target;
+  const dispatch = useDispatch();
 
-    setFormData((prev) =>({
-      ...prev,
-      [name]: name === 'age' ? Number(value) : value,
-    }))
-  }
-
-  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      acceptedTerms: e.target.checked,
-    }))
-  }
-
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    const user: FormState = {
+      id: Date.now(),
+      name: data.get("name") as string,
+      email: data.get("email") as string,
+      gender: data.get("gender") as 'male' | 'female',
+      age: Number(data.get("age")),
+      acceptedTerms: data.get("acceptedTerms") !== null,
+    } 
+    console.log(user);
+    dispatch(addUser(user));
+
+    form.reset();
   }
 
   const handleModeChange = (mode: FormMode) => {
@@ -51,10 +54,11 @@ const ModalForm = ({open, onClose}: {open: boolean, onClose: () => void}) => {
   }
 
   const handleRHFFormSubmit = (data: FormState) => {
+    dispatch(addUser(formData))
     reset(data);
   }
 
-  const renderUncontrolledForm = () => <UncontrolledForm formData={formData} handleChange={handleChange} handleSubmit={handleSubmit} handleCheckboxChange={handleCheckboxChange} />
+  const renderUncontrolledForm = () => <UncontrolledForm handleSubmit={handleSubmit} />
 
   const renderRHFForm = () => <RHFForm register={register} handleRHFSubmit={handleRHFSubmit} handleRHFFormSubmit={handleRHFFormSubmit} />
 

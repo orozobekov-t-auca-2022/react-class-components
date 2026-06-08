@@ -1,9 +1,5 @@
-import type { ChangeEvent, FormEvent } from "react";
-import type { FormState } from "../ModalForm/types";
+import type { FormEvent } from "react";
 
 export interface UncontrolledFormProps {
-  handleSubmit: (e: FormEvent) => void;
-  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleCheckboxChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  formData: FormState
+  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
 }
