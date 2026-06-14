@@ -76,16 +76,16 @@ export const CountryList = memo(({
 
   return (
     <div style={{ width: '100%', height: '600px' }}>
-        <List
-          height={600}
-          width="100%"
-          itemCount={filteredAndSorted.length}
-          itemSize={260}
-          itemData={itemData}
-          overscanCount={3}
-        >
-          {Row}
-        </List>
+      <List
+        height={600}
+        width="100%"
+        itemCount={filteredAndSorted.length}
+        itemSize={260}
+        itemData={itemData}
+        overscanCount={3}
+      >
+        {Row}
+      </List>
     </div>
   );
 });
